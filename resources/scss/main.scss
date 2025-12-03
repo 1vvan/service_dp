@@ -16,7 +16,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    border-color: $border-color;
+    border-color: $border;
 }
 
 body {
@@ -50,43 +50,43 @@ h1, h2, h3, h4, h5, h6 {
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    background-image: var(--gradient-accent);
+    background-image: $gradient-accent;
 }
 
 .bg-hero-gradient {
-    background: var(--gradient-hero);
+    background: $gradient-hero;
 }
 
 .bg-card-gradient {
-    background: var(--gradient-card);
+    background: $gradient-card;
 }
 
 .glow-primary {
-    box-shadow: var(--glow-primary);
+    box-shadow: $glow-primary;
 }
 
 .glow-subtle {
-    box-shadow: var(--glow-subtle);
+    box-shadow: $glow-subtle;
 }
 
 .shadow-card {
-    box-shadow: var(--shadow-card);
+    box-shadow: $shadow-card;
 }
 
 .shadow-elevated {
-    box-shadow: var(--shadow-elevated);
+    box-shadow: $shadow-elevated;
 }
 
 .glass {
-    background: hsl(var(--card) / 0.8);
+    background: rgba($card, 0.8);
     backdrop-filter: blur(24px);
-    border: 1px solid hsl(var(--border) / 0.5);
+    border: 1px solid rgba($border, 0.5);
 }
 
 .glass-strong {
-    background: hsl(var(--card) / 0.9);
+    background: rgba($card, 0.9);
     backdrop-filter: blur(32px);
-    border: 1px solid hsl(var(--border) / 0.6);
+    border: 1px solid rgba($border, 0.6);
 }
 
 @keyframes float {
@@ -100,10 +100,10 @@ h1, h2, h3, h4, h5, h6 {
 
 @keyframes pulse-glow {
     0%, 100% {
-        box-shadow: 0 0 20px hsl(24 95% 53% / 0.3);
+        box-shadow: 0 0 20px rgba($primary, 0.3);
     }
     50% {
-        box-shadow: 0 0 40px hsl(24 95% 53% / 0.5);
+        box-shadow: 0 0 40px rgba($primary, 0.5);
     }
 }
 

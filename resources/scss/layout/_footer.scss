@@ -2,7 +2,7 @@
 
 .footer {
     background: $card;
-    border-top: 1px solid $border-color;
+    border-top: 1px solid $border;
     padding: 3rem 0;
     
     &-container {
@@ -36,7 +36,7 @@
                 width: 2.5rem;
                 height: 2.5rem;
                 border-radius: $border-radius-lg;
-                background-color: $primary-color;
+                background-color: $primary;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -44,7 +44,7 @@
                 svg {
                     width: 1.25rem;
                     height: 1.25rem;
-                    color: $primary-foreground;
+                    color: $background;
                 }
             }
             
@@ -55,7 +55,7 @@
                 color: $foreground;
                 
                 .highlight {
-                    color: $primary-color;
+                    color: $primary;
                 }
             }
         }
@@ -90,7 +90,7 @@
                     transition: color 0.2s ease;
                     
                     &:hover {
-                        color: $primary-color;
+                        color: $primary;
                     }
                 }
                 
@@ -104,7 +104,7 @@
                     svg {
                         width: 1rem;
                         height: 1rem;
-                        color: $primary-color;
+                        color: $primary;
                     }
                 }
             }
@@ -112,7 +112,7 @@
     }
     
     &-bottom {
-        border-top: 1px solid $border-color;
+        border-top: 1px solid $border;
         margin-top: 2.5rem;
         padding-top: 1.5rem;
         display: flex;
@@ -142,7 +142,7 @@
                 transition: color 0.2s ease;
                 
                 &:hover {
-                    color: $primary-color;
+                    color: $primary;
                 }
             }
         }

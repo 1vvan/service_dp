@@ -37,9 +37,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@use '../../scss/variables' as *;
+
 .home-page {
     min-height: 100vh;
-    background: hsl(var(--background));
+    background: $background;
 }
 </style>

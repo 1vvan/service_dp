@@ -1,62 +1,43 @@
-:root {
-  --background: 220 20% 10%;
-  --foreground: 210 20% 98%;
+$orange-400: #fb923c;
+$orange-500: #f97316;
+$orange-600: #ea580c;
 
-  --card: 220 18% 14%;
-  --card-foreground: 210 20% 98%;
+$slate-400: #94a3b8;
+$slate-600: #475569;
+$slate-700: #334155;
+$slate-800: #1e293b;
+$slate-900: #0f172a;
+$slate-50: #f8fafc;
 
-  --popover: 220 18% 12%;
-  --popover-foreground: 210 20% 98%;
+$red-500: #ef4444;
+$red-600: #dc2626;
 
-  --primary: 24 95% 53%;
-  --primary-foreground: 220 20% 10%;
+$primary: $orange-500;
+$primary-hover: $orange-600;
 
-  --secondary: 220 15% 20%;
-  --secondary-foreground: 210 20% 98%;
+$background: $slate-900;
+$foreground: $slate-50;
 
-  --muted: 220 15% 18%;
-  --muted-foreground: 215 15% 55%;
+$card: $slate-800;
+$card-foreground: $slate-50;
 
-  --accent: 24 95% 53%;
-  --accent-foreground: 220 20% 10%;
+$secondary: $slate-700;
+$secondary-foreground: $slate-50;
 
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 210 20% 98%;
+$muted: $slate-600;
+$muted-foreground: $slate-400;
 
-  --border: 220 15% 22%;
-  --input: 220 15% 18%;
-  --ring: 24 95% 53%;
+$destructive: $red-500;
+$destructive-foreground: $slate-50;
 
-  --radius: 0.75rem;
+$border: $slate-700;
+$input: $slate-800;
+$ring: $orange-500;
 
-  --gradient-hero: linear-gradient(135deg, hsl(220 20% 8%) 0%, hsl(220 18% 14%) 50%, hsl(220 15% 18%) 100%);
-  --gradient-card: linear-gradient(145deg, hsl(220 18% 16%) 0%, hsl(220 18% 12%) 100%);
-  --gradient-accent: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(32 95% 50%) 100%);
-  --glow-primary: 0 0 60px hsl(24 95% 53% / 0.3);
-  --glow-subtle: 0 0 40px hsl(24 95% 53% / 0.15);
-  --shadow-card: 0 8px 32px hsl(220 20% 5% / 0.5);
-  --shadow-elevated: 0 20px 60px hsl(220 20% 5% / 0.6);
-}
-
-$primary-color: hsl(var(--primary));
-$primary-foreground: hsl(var(--primary-foreground));
-$secondary-color: hsl(var(--secondary));
-$secondary-foreground: hsl(var(--secondary-foreground));
-$background: hsl(var(--background));
-$foreground: hsl(var(--foreground));
-$card: hsl(var(--card));
-$card-foreground: hsl(var(--card-foreground));
-$muted: hsl(var(--muted));
-$muted-foreground: hsl(var(--muted-foreground));
-$destructive: hsl(var(--destructive));
-$border-color: hsl(var(--border));
-$input-bg: hsl(var(--input));
-$ring-color: hsl(var(--ring));
-
-$border-radius: var(--radius);
-$border-radius-lg: var(--radius);
-$border-radius-md: calc(var(--radius) - 2px);
-$border-radius-sm: calc(var(--radius) - 4px);
+$border-radius: 0.75rem;
+$border-radius-lg: 0.75rem;
+$border-radius-md: calc(0.75rem - 2px);
+$border-radius-sm: calc(0.75rem - 4px);
 
 $font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 $font-display: 'Space Grotesk', sans-serif;
@@ -73,3 +54,11 @@ $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;
 $breakpoint-xl: 1280px;
 $breakpoint-2xl: 1400px;
+
+$gradient-hero: linear-gradient(135deg, #0a0e1a 0%, #1e293b 50%, #334155 100%);
+$gradient-card: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+$gradient-accent: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+$glow-primary: 0 0 60px rgba(249, 115, 22, 0.3);
+$glow-subtle: 0 0 40px rgba(249, 115, 22, 0.15);
+$shadow-card: 0 8px 32px rgba(15, 23, 42, 0.5);
+$shadow-elevated: 0 20px 60px rgba(15, 23, 42, 0.6);

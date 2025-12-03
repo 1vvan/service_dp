@@ -15,7 +15,7 @@
     outline: none;
     
     &:focus-visible {
-        outline: 2px solid $ring-color;
+        outline: 2px solid $ring;
         outline-offset: 2px;
     }
     
@@ -31,44 +31,43 @@
         flex-shrink: 0;
     }
     
-    // Варианты
     &--default {
-        background-color: $primary-color;
-        color: $primary-foreground;
-        box-shadow: var(--glow-subtle);
+        background-color: $primary;
+        color: $background;
+        box-shadow: $glow-subtle;
         
         &:hover {
-            background-color: hsl(var(--primary) / 0.9);
-            box-shadow: var(--glow-primary);
+            background-color: $primary-hover;
+            box-shadow: $glow-primary;
         }
     }
     
     &--destructive {
         background-color: $destructive;
-        color: hsl(var(--destructive-foreground));
+        color: $destructive-foreground;
         
         &:hover {
-            background-color: hsl(var(--destructive) / 0.9);
+            background-color: $red-600;
         }
     }
     
     &--outline {
-        border: 1px solid $border-color;
+        border: 1px solid $border;
         background-color: transparent;
         color: $foreground;
         
         &:hover {
-            background-color: $secondary-color;
+            background-color: $secondary;
             color: $secondary-foreground;
         }
     }
     
     &--secondary {
-        background-color: $secondary-color;
+        background-color: $secondary;
         color: $secondary-foreground;
         
         &:hover {
-            background-color: hsl(var(--secondary) / 0.8);
+            background-color: rgba($secondary, 0.8);
         }
     }
     
@@ -77,13 +76,13 @@
         background-color: transparent;
         
         &:hover {
-            background-color: $secondary-color;
+            background-color: $secondary;
             color: $secondary-foreground;
         }
     }
     
     &--link {
-        color: $primary-color;
+        color: $primary;
         text-decoration: underline;
         text-underline-offset: 4px;
         
@@ -93,29 +92,28 @@
     }
     
     &--hero {
-        background-color: $primary-color;
-        color: $primary-foreground;
+        background-color: $primary;
+        color: $background;
         font-weight: 700;
-        box-shadow: var(--glow-primary);
+        box-shadow: $glow-primary;
         
         &:hover {
-            background-color: hsl(var(--primary) / 0.9);
+            background-color: $primary-hover;
             transform: scale(1.05);
         }
     }
     
     &--hero-outline {
-        border: 2px solid hsl(var(--primary) / 0.5);
+        border: 2px solid rgba($primary, 0.5);
         background-color: transparent;
         color: $foreground;
         
         &:hover {
-            background-color: hsl(var(--primary) / 0.1);
-            border-color: $primary-color;
+            background-color: rgba($primary, 0.1);
+            border-color: $primary;
         }
     }
     
-    // Размеры
     &--sm {
         height: 2.25rem;
         padding: 0 1rem;
