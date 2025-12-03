@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>AutoCare - Професійний Автосервіс</title>
+    <meta name="description" content="Професійне обслуговування та ремонт автомобілів. Записуйтесь на прийом, відстежуйте історію обслуговування та підтримуйте свій автомобіль у відмінному стані." />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
     <!-- Styles -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/scss/main.scss', 'resources/js/app.js'])
 </head>
 <body>
     <div id="app"></div>

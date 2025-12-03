@@ -1,22 +1,56 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
-import tailwindcss from '@tailwindcss/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: [
+                'resources/scss/main.scss',
+                'resources/js/app.js'
+            ],
             refresh: true,
         }),
-        vue({
-            template: {
-                transformAssetUrls: {
-                    base: null,
-                    includeAbsolute: false,
+        vue(),
+        Components({
+            resolvers: [ElementPlusResolver()],
+            dts: false,
+        }),
+    ],
+    resolve: {
+        alias: {
+            vue: 'vue/dist/vue.esm-bundler.js',
+        },
+    },
+    optimizeDeps: {
+        include: [
+            'vue',
+            'vue-router',
+            'vuex',
+            'element-plus',
+        ],
+    },
+    build: {
+        target: 'es2017',
+        minify: 'terser',
+        cssCodeSplit: true,
+        sourcemap: false,
+        chunkSizeWarningLimit: 1000,
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor-vue': ['vue', 'vue-router', 'vuex'],
+                    'vendor-ui': ['element-plus'],
                 },
             },
-        }),
-        tailwindcss(),
-    ],
+        },
+        terserOptions: {
+            compress: {
+                drop_console: true,
+                drop_debugger: true,
+            },
+        },
+    },
 });

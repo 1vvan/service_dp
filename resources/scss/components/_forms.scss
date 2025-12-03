@@ -1,0 +1,85 @@
+@use '../variables' as *;
+
+.form-group {
+    margin-bottom: $spacing-md;
+    
+    label {
+        display: block;
+        margin-bottom: $spacing-xs;
+        font-weight: 500;
+        color: $foreground;
+        font-size: 0.875rem;
+        font-medium: 500;
+        line-height: 1;
+        
+        &.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    }
+    
+    input,
+    textarea,
+    select {
+        width: 100%;
+        height: 2.5rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid $border-color;
+        border-radius: $border-radius-md;
+        background-color: $background;
+        font-size: 0.875rem;
+        color: $foreground;
+        transition: all 0.2s ease;
+        
+        @media (min-width: $breakpoint-md) {
+            font-size: 0.875rem;
+        }
+        
+        &::placeholder {
+            color: $muted-foreground;
+        }
+        
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px $ring-color;
+        }
+        
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        &[type="file"] {
+            border: 0;
+            background: transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: $foreground;
+        }
+    }
+    
+    .input-icon {
+        position: relative;
+        
+        .icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1rem;
+            height: 1rem;
+            color: $muted-foreground;
+            pointer-events: none;
+        }
+        
+        input {
+            padding-left: 2.5rem;
+        }
+    }
+    
+    .error-message {
+        color: $destructive;
+        font-size: 0.875rem;
+        margin-top: $spacing-xs;
+    }
+}

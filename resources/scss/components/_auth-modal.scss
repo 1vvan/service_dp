@@ -1,0 +1,226 @@
+@use '../variables' as *;
+
+.auth-modal-dialog {
+    background: hsl(var(--card) / 0.95) !important;
+    backdrop-filter: blur(32px);
+    border: 1px solid hsl(var(--border) / 0.6) !important;
+    border-radius: 1rem !important;
+    box-shadow: var(--shadow-elevated) !important;
+
+    .el-dialog__header {
+        padding: 0;
+        margin-bottom: 1.5rem;
+        margin-top: 10px;
+    }
+
+    .el-dialog__body {
+        padding: 0;
+    }
+
+    .el-dialog__headerbtn {
+        top: 1rem;
+        right: 1rem;
+        
+        .el-dialog__close {
+            color: hsl(var(--muted-foreground));
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
+            
+            &:hover {
+                color: hsl(var(--foreground));
+            }
+        }
+    }
+
+    .auth-modal-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-modal-title {
+        font-size: 1.5rem;
+        font-family: $font-display;
+        font-weight: 700;
+        color: hsl(var(--foreground));
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-modal-subtitle {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.875rem;
+        margin: 0;
+    }
+
+    .auth-modal-tabs {
+        .el-tabs__header {
+            margin-bottom: 1.5rem;
+        }
+        .el-tabs__nav-scroll {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .el-tabs__nav-wrap::after {
+            background-color: hsl(var(--border));
+        }
+
+        .el-tabs__active-bar {
+            background-color: hsl(var(--primary));
+        }
+
+        .el-tabs__item {
+            font-weight: 500;
+            color: hsl(var(--muted-foreground));
+            transition: all 0.2s ease;
+            
+            &:hover {
+                color: hsl(var(--foreground));
+            }
+            
+            &.is-active {
+                color: hsl(var(--foreground));
+            }
+        }
+    }
+
+    .el-form {
+        .el-form-item {
+            margin-bottom: 1.25rem;
+        }
+
+        .el-form-item__label {
+            color: hsl(var(--foreground));
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .el-form-item__error {
+            color: hsl(var(--destructive));
+            font-size: 0.75rem;
+            padding-top: 0.25rem;
+        }
+    }
+
+    .el-input {
+        .el-input__wrapper {
+            background-color: hsl(var(--secondary));
+            border: 1px solid hsl(var(--border));
+            border-radius: calc(var(--radius) - 2px);
+            box-shadow: none;
+            transition: all 0.2s ease;
+            
+            &:hover {
+                border-color: hsl(var(--primary) / 0.5);
+            }
+            
+            &.is-focus {
+                border-color: hsl(var(--primary));
+                box-shadow: 0 0 0 2px hsl(var(--primary) / 0.1);
+            }
+        }
+
+        .el-input__inner {
+            color: hsl(var(--foreground));
+            background-color: transparent;
+            
+            &::placeholder {
+                color: hsl(var(--muted-foreground));
+            }
+        }
+
+        .el-input__prefix {
+            color: hsl(var(--muted-foreground));
+        }
+
+        .el-input__suffix {
+            color: hsl(var(--muted-foreground));
+        }
+    }
+
+    .el-button {
+        border-radius: $border-radius-lg;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        
+        &.el-button--primary {
+            background-color: hsl(var(--primary));
+            border-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            box-shadow: var(--glow-subtle);
+            
+            &:hover {
+                background-color: hsl(var(--primary) / 0.9);
+                border-color: hsl(var(--primary) / 0.9);
+                box-shadow: var(--glow-primary);
+                transform: scale(1.02);
+            }
+            
+            &:active {
+                transform: scale(0.98);
+            }
+            
+            &.is-loading {
+                background-color: hsl(var(--primary) / 0.8);
+                border-color: hsl(var(--primary) / 0.8);
+            }
+        }
+        
+        &.el-button--large {
+            height: 3rem;
+            padding: 0 2rem;
+            font-size: 1rem;
+        }
+    }
+
+    .el-link {
+        font-size: 0.875rem;
+        
+        &.el-link--primary {
+            color: hsl(var(--primary));
+            
+            &:hover {
+                color: hsl(var(--primary) / 0.8);
+            }
+        }
+    }
+
+    .el-divider {
+        border-color: hsl(var(--border));
+        margin: 1.5rem 0;
+        
+        .el-divider__text {
+            background-color: hsl(var(--card));
+            color: hsl(var(--muted-foreground));
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            padding: 0 0.5rem;
+        }
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .w-full {
+        width: 100%;
+    }
+
+    .auth-modal-footer {
+        width: 100%;
+    }
+
+    .el-button:not(.el-button--primary) {
+        background-color: hsl(var(--secondary));
+        border-color: hsl(var(--border));
+        color: hsl(var(--foreground));
+        
+        &:hover {
+            background-color: hsl(var(--secondary) / 0.8);
+            border-color: hsl(var(--primary) / 0.5);
+            color: hsl(var(--foreground));
+        }
+    }
+}
+

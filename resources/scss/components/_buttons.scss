@@ -1,0 +1,148 @@
+@use '../variables' as *;
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    border-radius: $border-radius-lg;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    
+    &:focus-visible {
+        outline: 2px solid $ring-color;
+        outline-offset: 2px;
+    }
+    
+    &:disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+    
+    svg {
+        pointer-events: none;
+        width: 1rem;
+        height: 1rem;
+        flex-shrink: 0;
+    }
+    
+    // Варианты
+    &--default {
+        background-color: $primary-color;
+        color: $primary-foreground;
+        box-shadow: var(--glow-subtle);
+        
+        &:hover {
+            background-color: hsl(var(--primary) / 0.9);
+            box-shadow: var(--glow-primary);
+        }
+    }
+    
+    &--destructive {
+        background-color: $destructive;
+        color: hsl(var(--destructive-foreground));
+        
+        &:hover {
+            background-color: hsl(var(--destructive) / 0.9);
+        }
+    }
+    
+    &--outline {
+        border: 1px solid $border-color;
+        background-color: transparent;
+        color: $foreground;
+        
+        &:hover {
+            background-color: $secondary-color;
+            color: $secondary-foreground;
+        }
+    }
+    
+    &--secondary {
+        background-color: $secondary-color;
+        color: $secondary-foreground;
+        
+        &:hover {
+            background-color: hsl(var(--secondary) / 0.8);
+        }
+    }
+    
+    &--ghost {
+        color: $foreground;
+        background-color: transparent;
+        
+        &:hover {
+            background-color: $secondary-color;
+            color: $secondary-foreground;
+        }
+    }
+    
+    &--link {
+        color: $primary-color;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    
+    &--hero {
+        background-color: $primary-color;
+        color: $primary-foreground;
+        font-weight: 700;
+        box-shadow: var(--glow-primary);
+        
+        &:hover {
+            background-color: hsl(var(--primary) / 0.9);
+            transform: scale(1.05);
+        }
+    }
+    
+    &--hero-outline {
+        border: 2px solid hsl(var(--primary) / 0.5);
+        background-color: transparent;
+        color: $foreground;
+        
+        &:hover {
+            background-color: hsl(var(--primary) / 0.1);
+            border-color: $primary-color;
+        }
+    }
+    
+    // Размеры
+    &--sm {
+        height: 2.25rem;
+        padding: 0 1rem;
+        border-radius: $border-radius-md;
+    }
+    
+    &--default-size {
+        height: 2.5rem;
+        padding: 0.5rem 1.25rem;
+    }
+    
+    &--lg {
+        height: 3rem;
+        padding: 0 2rem;
+        border-radius: $border-radius-lg;
+        font-size: 1rem;
+    }
+    
+    &--xl {
+        height: 3.5rem;
+        padding: 0 2.5rem;
+        border-radius: 0.75rem;
+        font-size: 1.125rem;
+    }
+    
+    &--icon {
+        height: 2.5rem;
+        width: 2.5rem;
+    }
+}

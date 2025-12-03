@@ -1,0 +1,67 @@
+@mixin respond-to($breakpoint) {
+    @if $breakpoint == sm {
+        @media (min-width: 640px) {
+            @content;
+        }
+    }
+    @if $breakpoint == md {
+        @media (min-width: 768px) {
+            @content;
+        }
+    }
+    @if $breakpoint == lg {
+        @media (min-width: 1024px) {
+            @content;
+        }
+    }
+    @if $breakpoint == xl {
+        @media (min-width: 1280px) {
+            @content;
+        }
+    }
+}
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin button-base {
+    padding: $spacing-sm $spacing-md;
+    border-radius: $border-radius;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-card);
+    }
+    
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+@mixin card {
+    background: $card;
+    border-radius: $border-radius;
+    box-shadow: var(--shadow-card);
+    padding: $spacing-lg;
+    border: 1px solid $border-color;
+}
+
+@mixin text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+

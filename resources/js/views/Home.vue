@@ -1,13 +1,45 @@
 <template>
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-4">Добро пожаловать!</h1>
-        <p class="text-lg">Laravel + Vue.js + Vue Router + Vuex настроены и готовы к работе.</p>
+    <div class="home-page">
+        <Header @loginClick="openAuthModal" />
+        <HeroSection @getStarted="openAuthModal" />
+        <Footer />
+        <AuthModal :isOpen="isAuthModalOpen" @close="closeAuthModal" />
     </div>
 </template>
 
 <script>
+import Header from '../components/Header.vue';
+import Footer from '../components/Footer.vue';
+import HeroSection from '../components/HeroSection.vue';
+import AuthModal from '../components/AuthModal.vue';
+
 export default {
-    name: 'Home'
-}
+    name: 'Home',
+    components: {
+        Header,
+        Footer,
+        HeroSection,
+        AuthModal
+    },
+    data() {
+        return {
+            isAuthModalOpen: false
+        };
+    },
+    methods: {
+        openAuthModal() {
+            this.isAuthModalOpen = true;
+        },
+        closeAuthModal() {
+            this.isAuthModalOpen = false;
+        }
+    }
+};
 </script>
 
+<style scoped>
+.home-page {
+    min-height: 100vh;
+    background: hsl(var(--background));
+}
+</style>
