@@ -37,7 +37,6 @@
                             type="email"
                             placeholder="ivan@example.com"
                             size="large"
-                            :prefix-icon="Message"
                         />
                     </el-form-item>
 
@@ -46,8 +45,6 @@
                             v-model="formData.password"
                             :type="showPassword ? 'text' : 'password'"
                             size="large"
-                            :prefix-icon="Lock"
-                            :suffix-icon="showPassword ? View : Hide"
                             @click:append-icon="togglePassword"
                             show-password
                         />
@@ -89,7 +86,6 @@
                             type="text"
                             placeholder="Іван Іванов"
                             size="large"
-                            :prefix-icon="User"
                         />
                     </el-form-item>
 
@@ -99,7 +95,6 @@
                             type="email"
                             placeholder="ivan@example.com"
                             size="large"
-                            :prefix-icon="Message"
                         />
                     </el-form-item>
 
@@ -109,7 +104,16 @@
                             :type="showPassword ? 'text' : 'password'"
                             placeholder="••••••••"
                             size="large"
-                            :prefix-icon="Lock"
+                            show-password
+                        />
+                    </el-form-item>
+
+                    <el-form-item label="Підтвердження пароля" prop="password_confirmation">
+                        <el-input
+                            v-model="formData.password_confirmation"
+                            :type="showPassword ? 'text' : 'password'"
+                            placeholder="••••••••"
+                            size="large"
                             show-password
                         />
                     </el-form-item>
@@ -133,17 +137,9 @@
 
 <script>
 import { ElMessage } from 'element-plus';
-import { Lock, User, View, Hide, Message } from '@element-plus/icons-vue';
 
 export default {
     name: 'AuthModal',
-    components: {
-        Lock,
-        User,
-        View,
-        Hide,
-        Message
-    },
     props: {
         isOpen: {
             type: Boolean,
@@ -159,7 +155,8 @@ export default {
             formData: {
                 name: '',
                 email: '',
-                password: ''
+                password: '',
+                password_confirmation: ''
             },
             loginRules: {
                 email: [
@@ -183,6 +180,19 @@ export default {
                 password: [
                     { required: true, message: 'Будь ласка, введіть пароль', trigger: 'blur' },
                     { min: 6, message: 'Пароль повинен містити мінімум 6 символів', trigger: 'blur' }
+                ],
+                password_confirmation: [
+                    { required: true, message: 'Будь ласка, підтвердіть пароль', trigger: 'blur' },
+                    {
+                        validator: (rule, value, callback) => {
+                            if (value !== this.formData.password) {
+                                callback(new Error('Паролі не співпадають'));
+                            } else {
+                                callback();
+                            }
+                        },
+                        trigger: 'blur'
+                    }
                 ]
             }
         };
@@ -213,42 +223,53 @@ export default {
         togglePassword() {
             this.showPassword = !this.showPassword;
         },
-        async handleSubmit() {
+        handleSubmit() {
             const formRef = this.mode === 'login' ? this.$refs.loginFormRef : this.$refs.registerFormRef;
             
             if (!formRef) return;
+            
+            formRef.validate().then((valid) => {
+                if (!valid) return;
+                const payload = this.mode === 'login' 
+                    ? {
+                        email: this.formData.email,
+                        password: this.formData.password
+                    }
+                    : {
+                        name: this.formData.name,
+                        email: this.formData.email,
+                        password: this.formData.password,
+                        password_confirmation: this.formData.password_confirmation
+                    };
+    
+                const action = this.mode === 'login' ? 'login' : 'register';
+                this.$store.dispatch(action, payload).then(() => {
+                    ElMessage.success(
+                        this.mode === 'login' 
+                            ? 'Ласкаво просимо назад!' 
+                            : 'Акаунт створено!'
+                    );
+                    this.handleClose();
+                    this.resetForm();
+                }).catch((error) => {
+                    ElMessage.error(error.message);
+                }).finally(() => {
+                    this.loading = false;
+                });
+            });
 
-            try {
-                await formRef.validate();
-                this.loading = true;
-
-                await new Promise(resolve => setTimeout(resolve, 1000));
-
-                ElMessage.success(
-                    this.mode === 'login' 
-                        ? 'Ласкаво просимо назад!' 
-                        : 'Акаунт створено!'
-                );
-                
-                this.handleClose();
-                this.resetForm();
-            } catch (error) {
-                console.error('Validation failed:', error);
-            } finally {
-                this.loading = false;
-            }
         },
         handleForgotPassword() {
             ElMessage.info('Функція відновлення пароля буде доступна найближчим часом');
         },
         resetForm() {
-            this.formData = { name: '', email: '', password: '' };
+            this.formData = { name: '', email: '', password: '', password_confirmation: '' };
             this.showPassword = false;
             this.mode = 'login';
             this.$refs.loginFormRef?.resetFields();
             this.$refs.registerFormRef?.resetFields();
         }
-    }
+    },
 };
 </script>
 

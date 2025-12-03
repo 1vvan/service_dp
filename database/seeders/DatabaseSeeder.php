@@ -22,23 +22,5 @@ class DatabaseSeeder extends Seeder
             BookingStatusSeeder::class,
             ServiceSeeder::class,
         ]);
-
-        // Создаем тестового пользователя-менеджера
-        User::create([
-            'full_name' => 'Test Manager',
-            'email' => 'manager@example.com',
-            'phone' => '+380501234567',
-            'role_id' => User::ROLE_MANAGER,
-            'password' => bcrypt('password'),
-        ]);
-
-        // Создаем тестового админа
-        User::create([
-            'full_name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'phone' => '+380507654321',
-            'role_id' => User::ROLE_ADMIN,
-            'password' => bcrypt('password'),
-        ]);
     }
 }
