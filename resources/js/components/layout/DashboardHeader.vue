@@ -1,60 +1,44 @@
 <template>
-    <el-header :class="['dashboard-header', { 'sidebar-collapsed': isSidebarCollapsed }]">
+    <el-header :class="['dashboard-header', { 'sidebar-collapsed': isCollapsed }]">
+
+        <button class="toggle-sidebar-btn" @click="toggleSidebar">
+            <el-icon v-if="!isCollapsed"><Fold /></el-icon>
+            <el-icon v-else><Expand /></el-icon>
+        </button>
+
         <div class="header-left">
-            <p class="title">Панель керування</p>
-            <p class="subtitle">Ласкаво просимо, {{ userName }}</p>
+            <p class="title">{{pageBreadcrumbs.title}}</p>
+            <p class="subtitle">{{pageBreadcrumbs.subtitle}}</p>
         </div>
         
         <div class="header-right">
-            <el-dropdown @command="handleCommand" class="user-dropdown">
-                <div class="user-info">
-                    <el-avatar :size="32" class="user-avatar">
-                        {{ userInitials }}
-                    </el-avatar>
-                    <span class="user-name">{{ userName }}</span>
-                    <el-icon class="dropdown-icon"><ArrowDown /></el-icon>
-                </div>
-                <template #dropdown>
-                    <el-dropdown-menu class="user-dropdown-menu">
-                        <el-dropdown-item command="profile">
-                            <el-icon><User /></el-icon>
-                            Профіль
-                        </el-dropdown-item>
-                        <el-dropdown-item command="settings">
-                            <el-icon><Setting /></el-icon>
-                            Налаштування
-                        </el-dropdown-item>
-                        <el-dropdown-item divided command="logout">
-                            <el-icon><SwitchButton /></el-icon>
-                            Вийти
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </template>
-            </el-dropdown>
+            <div class="user-info">
+                <el-avatar :size="32" class="user-avatar">
+                    {{ userInitials }}
+                </el-avatar>
+                <span class="user-name">{{ userName }}</span>
+            </div>
         </div>
     </el-header>
 </template>
 
 <script>
 import {
-    ArrowDown,
-    User,
-    Setting,
-    SwitchButton
+    Fold,
+    Expand
 } from '@element-plus/icons-vue';
 
 export default {
     name: 'DashboardHeader',
-    components: {
-        ArrowDown,
-        User,
-        Setting,
-        SwitchButton
-    },
-    inject: {
-        getSidebarCollapsed: {
-            default: () => () => ({ isCollapsed: false })
+    props: {
+        isCollapsed: {
+            type: Boolean,
+            default: false
         }
+    },
+    components: {
+        Fold,
+        Expand
     },
     computed: {
         user() {
@@ -70,32 +54,21 @@ export default {
             }
             return this.user?.email?.[0].toUpperCase() || 'U';
         },
-        breadcrumbs() {
-            const matched = this.$route.matched.filter(item => item.meta && item.meta.title);
-            return matched.map(item => ({
-                path: item.path,
-                title: item.meta.title
-            }));
-        },
-        isSidebarCollapsed() {
-            const sidebar = this.getSidebarCollapsed?.();
-            return sidebar?.isCollapsed || false;
+        pageBreadcrumbs() {
+            let title = this.$route.meta.title;
+            let subtitle = this.$route.meta.subtitle;
+            if (this.$route.name === 'Dashboard') {
+                subtitle = subtitle + ', ' + this.user?.full_name;
+            }
+            return {
+                title,
+                subtitle
+            };
         }
     },
     methods: {
-        async handleCommand(command) {
-            if (command === 'logout') {
-                try {
-                    await this.$store.dispatch('logout');
-                    this.$router.push('/');
-                } catch (error) {
-                    console.error('Помилка виходу:', error);
-                }
-            } else if (command === 'profile') {
-                this.$router.push('/dashboard/profile');
-            } else if (command === 'settings') {
-                this.$router.push('/dashboard/settings');
-            }
+        toggleSidebar() {
+            this.$emit('toggle-sidebar');
         }
     }
 };

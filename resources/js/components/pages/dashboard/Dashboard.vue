@@ -143,10 +143,10 @@ export default {
             };
         },
         userCars() {
-            return this.$store.state.bookings.userBookings;
+            return this.$store.state.cars.userCars;
         },
         userBookings() {
-            return this.$store.state.cars.userCars;
+            return this.$store.state.bookings.userBookings;
         }
     },
     methods: {
@@ -173,13 +173,13 @@ export default {
             };
             return statusMap[statusName] || 'info';
         },
-        fetchUserCars() {
+        fetchUserData() {
             this.$store.dispatch('cars/fetchUserCars', this.$store.state.user.id);
             this.$store.dispatch('bookings/fetchUserBookings', this.$store.state.user.id);
         }
     },
     mounted() {
-        this.$store.dispatch('references/fetchAllReferences');
+        this.fetchUserData();
     }
 };
 </script>

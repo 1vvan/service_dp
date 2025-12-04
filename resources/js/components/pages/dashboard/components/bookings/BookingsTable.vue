@@ -1,5 +1,5 @@
 <template>
-    <el-table :data="bookings" style="width: 100%">
+    <el-table :data="bookings" class="dash-table">
         <el-table-column prop="id" label="ID" width="100" />
         <el-table-column prop="client_name" label="Клієнт" width="100" />
         <el-table-column prop="car_name" label="Автомобіль" width="100" />

@@ -4,11 +4,13 @@
 }
 
 .dashboard-main {
-    margin-left: 240px;
-    transition: margin-left 0.3s ease;
+    max-width: 85%;
+    margin-left: auto;
+    transition: max-width 0.3s ease;
 
     &.sidebar-collapsed {
-        margin-left: 64px;
+        max-width: 100%;
+        transition: max-width 0.3s ease;
     }
 }
 

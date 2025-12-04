@@ -157,6 +157,7 @@ const actions = {
     async fetchAllReferences({ dispatch }) {
         await Promise.all([
             dispatch('fetchCarBrands'),
+            dispatch('fetchCarModels'),
             dispatch('fetchFuelTypes'),
             dispatch('fetchEngineTypes'),
             dispatch('fetchGearboxTypes'),

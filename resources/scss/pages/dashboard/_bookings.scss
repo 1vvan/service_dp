@@ -1,0 +1,41 @@
+@use '../../variables' as *;
+
+.bookings-container {
+    .top {
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        .title {
+            font-size: 16px;
+            color: $slate-400;
+            font-weight: 400;
+
+            & .count {
+                color: $orange-400;
+            }
+        }
+
+        .create-booking-btn {
+            background-color: $orange-500;
+            border: none;
+            border-radius: 8px;
+            box-shadow: none !important;
+            color: $slate-900;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+
+            & .el-icon {
+                color: #000;
+            }
+        }
+    }
+}

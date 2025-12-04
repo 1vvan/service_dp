@@ -1,8 +1,8 @@
 <template>
     <el-container class="dashboard-layout">
-        <DashboardSidebar />
+        <DashboardSidebar :is-collapsed="isSidebarCollapsed" />
         <el-container :class="['dashboard-main', { 'sidebar-collapsed': isSidebarCollapsed }]">
-            <DashboardHeader />
+            <DashboardHeader :is-collapsed="isSidebarCollapsed" @toggle-sidebar="toggleSidebar" />
             <el-main class="dashboard-content">
                 <slot />
             </el-main>
@@ -20,11 +20,17 @@ export default {
         DashboardSidebar,
         DashboardHeader
     },
-    inject: ['getSidebarCollapsed'],
-    computed: {
-        isSidebarCollapsed() {
-            const sidebar = this.getSidebarCollapsed?.();
-            return sidebar?.isCollapsed || false;
+    data() {
+        return {
+            isSidebarCollapsed: false
+        }
+    },
+    mounted() {
+        this.$store.dispatch('references/fetchAllReferences');
+    },
+    methods: {
+        toggleSidebar() {
+            this.isSidebarCollapsed = !this.isSidebarCollapsed;
         }
     }
 };

@@ -1,11 +1,16 @@
 <template>
     <DashboardLayout>
-        <div class="page-container">
-            <h1>Бронювання</h1>
-            <p>Керуйте своїми бронюваннями</p>
-        </div>
+        <div class="bookings-container">
+            <div class="top">
+                <h1 class="title">Ви маєте <span class="count">{{ bookings.length }}</span> бронювань</h1>
 
-        <BookingsTable />
+                <button class="create-booking-btn">
+                    <el-icon><Plus /></el-icon>
+                    <span class="text">Створити бронювання</span>
+                </button>
+            </div>
+            <!-- <BookingsTable /> -->
+        </div>
     </DashboardLayout>
 </template>
 
@@ -17,13 +22,27 @@ export default {
     components: {
         DashboardLayout,
         BookingsTable
+    },
+    data() {
+        return {
+        }
+    },
+    computed: {
+        user() {
+            return this.$store.state.user;
+        },
+        bookings() {
+            return this.$store.state.bookings.userBookings || [];
+        }
+    },
+    mounted() {
+        this.getBookings();
+    },
+    methods: {
+        getBookings() {
+            this.$store.dispatch('bookings/fetchUserBookings', this.user.id);
+        }
     }
 };
 </script>
-
-<style>
-.page-container {
-    padding: 24px;
-}
-</style>
 

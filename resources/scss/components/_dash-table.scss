@@ -1,0 +1,46 @@
+@use '../variables.scss' as *;
+
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-radius: 10px !important;
+    overflow: hidden;
+    background-color: $gray-700 !important;
+
+    & .el-table tr,
+    & .el-scrollbar__wrap,
+    & .el-scrollbar,
+    & .el-table__header,
+    & .el-table__header-wrapper,
+    & .el-table__inner-wrapper {
+        background-color: $gray-700 !important;
+    }
+
+    table {
+        width: 100% !important;
+        background-color: $gray-700;
+
+        & .el-table__cell {
+            background-color: $gray-700 !important;
+            border-bottom: 1px solid $gray-750 !important;
+        }
+    }
+
+    .cell {
+        padding: 1px 16px !important;
+    }
+
+    thead {
+        th {
+            .cell {
+                color: $gray-400 !important;
+                font-weight: 500;
+            }
+        }
+    }
+
+    & .el-table__empty-block {
+        background-color: $gray-700 !important;
+    }
+}

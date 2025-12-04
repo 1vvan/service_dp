@@ -1,5 +1,5 @@
 <template>
-    <el-aside :width="isCollapsed ? '64px' : '240px'" class="dashboard-sidebar">
+    <el-aside :class="['dashboard-sidebar', { 'collapsed': isCollapsed }]">
         <div class="sidebar-header">
             <div v-if="!isCollapsed" class="logo">
                 <el-icon :size="24" class="logo-icon">
@@ -26,12 +26,10 @@
         </el-menu>
         
         <div class="sidebar-footer">
-            <el-button
-                :icon="isCollapsed ? Expand : Fold"
-                circle
-                class="collapse-btn"
-                @click="toggleCollapse"
-            />
+            <button class="logout-btn" @click="logout">
+                <el-icon><ArrowLeftBold /></el-icon>
+                Вийти
+            </button>
         </div>
     </el-aside>
 </template>
@@ -46,11 +44,18 @@ import {
     Van,
     Document,
     Expand,
-    Fold
+    Fold,
+    ArrowLeftBold
 } from '@element-plus/icons-vue';
 
 export default {
     name: 'DashboardSidebar',
+    props: {
+        isCollapsed: {
+            type: Boolean,
+            default: false
+        }
+    },
     components: {
         Tools,
         HomeFilled,
@@ -60,11 +65,11 @@ export default {
         Van,
         Document,
         Expand,
-        Fold
+        Fold,
+        ArrowLeftBold
     },
     data() {
         return {
-            isCollapsed: false,
             clientPages: [
                 {
                     name: 'Головна',
@@ -75,6 +80,11 @@ export default {
                     name: 'Бронювання',
                     icon: 'Calendar',
                     path: '/dashboard/bookings'
+                },
+                {
+                    name: 'Автомобілі',
+                    icon: 'Van',
+                    path: '/dashboard/cars'
                 },
             ],
             managerPages: [
@@ -109,14 +119,11 @@ export default {
             return this.$route.path;
         }
     },
-    provide() {
-        return {
-            getSidebarCollapsed: () => this
-        };
-    },
     methods: {
-        toggleCollapse() {
-            this.isCollapsed = !this.isCollapsed;
+        logout() {
+            this.$store.dispatch('logout').then(() => {
+                this.$router.push('/');
+            });
         }
     }
 };

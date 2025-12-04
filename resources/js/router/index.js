@@ -13,6 +13,7 @@ const routes = [
         component: () => import('../components/pages/dashboard/Dashboard.vue'),
         meta: {
             title: 'Панель керування',
+            subtitle: 'Ласкаво просимо',
             requiresAuth: true
         }
     },
@@ -22,6 +23,7 @@ const routes = [
         component: () => import('../components/pages/dashboard/components/bookings/Bookings.vue'),
         meta: {
             title: 'Бронювання',
+            subtitle: 'Керування бронюваннями',
             requiresAuth: true
         }
     },
@@ -31,6 +33,7 @@ const routes = [
         component: () => import('../components/pages/dashboard/components/Clients.vue'),
         meta: {
             title: 'Клієнти',
+            subtitle: 'Керування клієнтами',
             requiresAuth: true,
         }
     },
@@ -40,15 +43,17 @@ const routes = [
         component: () => import('../components/pages/dashboard/components/Services.vue'),
         meta: {
             title: 'Послуги',
+            subtitle: 'Керування послугами',
             requiresAuth: true,
         }
     },
     {
         path: '/dashboard/cars',
         name: 'Cars',
-        component: () => import('../components/pages/dashboard/components/Cars.vue'),
+        component: () => import('../components/pages/dashboard/components/cars/Cars.vue'),
         meta: {
             title: 'Автомобілі',
+            subtitle: 'Керування автомобілями',
             requiresAuth: true,
         }
     },
@@ -58,6 +63,7 @@ const routes = [
         component: () => import('../components/pages/dashboard/components/Reports.vue'),
         meta: {
             title: 'Звіти',
+            subtitle: 'Керування звітами',
             requiresAuth: true
         }
     },

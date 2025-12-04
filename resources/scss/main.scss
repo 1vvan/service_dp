@@ -5,7 +5,10 @@
 @use 'components/cards';
 @use 'components/forms';
 @use 'components/hero';
-@use 'components/auth-modal';
+@use 'components/dash-table';
+
+@use 'modals/auth-modal';
+@use 'modals/create-car-modal';
 
 @use 'layout/header';
 @use 'layout/footer';
@@ -13,10 +16,9 @@
 @use 'layout/dashboard-header';
 @use 'layout/dashboard-layout';
 
-@use 'pages/dashboard';
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
-
+@use 'pages/dashboard/dashboard';
+@use 'pages/dashboard/bookings';
+@use 'pages/dashboard/cars';
 * {
     margin: 0;
     padding: 0;

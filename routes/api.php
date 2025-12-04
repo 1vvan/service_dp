@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\CarsController;
 use App\Http\Controllers\Api\ReferenceController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,5 +34,5 @@ Route::prefix('bookings')->group(function () {
 });
 
 Route::prefix('cars')->group(function () {
-    Route::get('/{userId}', [CarController::class, 'getUserCars']);
+    Route::get('/{userId}', [CarsController::class, 'getUserCars']);
 });

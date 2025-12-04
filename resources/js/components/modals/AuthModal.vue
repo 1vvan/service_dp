@@ -98,6 +98,16 @@
                         />
                     </el-form-item>
 
+                    <el-form-item label="Телефон" prop="phone">
+                        <el-input
+                            v-model="formData.phone"
+                            type="tel"
+                            placeholder="+380 (00) 000 00 00"
+                            size="large"
+                            @input="handlePhoneInput"
+                        />
+                    </el-form-item>
+
                     <el-form-item label="Пароль" prop="password">
                         <el-input
                             v-model="formData.password"
@@ -137,6 +147,7 @@
 
 <script>
 import { ElMessage } from 'element-plus';
+import { normalizePhone, formatPhone } from '../../lib/utils';
 
 export default {
     name: 'AuthModal',
@@ -156,7 +167,8 @@ export default {
                 name: '',
                 email: '',
                 password: '',
-                password_confirmation: ''
+                password_confirmation: '',
+                phone: ''
             },
             loginRules: {
                 email: [
@@ -193,6 +205,24 @@ export default {
                         },
                         trigger: 'blur'
                     }
+                ],
+                phone: [
+                    { required: true, message: 'Будь ласка, введіть ваш телефон', trigger: 'blur' },
+                    {
+                        validator: (rule, value, callback) => {
+                            if (!value) {
+                                callback();
+                                return;
+                            }
+                            const phonePattern = /^\+380\s\(\d{2}\)\s\d{3}\s\d{2}\s\d{2}$/;
+                            if (!phonePattern.test(value)) {
+                                callback(new Error('Будь ласка, введіть коректний телефон у форматі +380 (00) 000 00 00'));
+                            } else {
+                                callback();
+                            }
+                        },
+                        trigger: 'blur'
+                    }
                 ]
             }
         };
@@ -223,6 +253,9 @@ export default {
         togglePassword() {
             this.showPassword = !this.showPassword;
         },
+        handlePhoneInput(value) {
+            this.formData.phone = formatPhone(value);
+        },
         handleSubmit() {
             const formRef = this.mode === 'login' ? this.$refs.loginFormRef : this.$refs.registerFormRef;
             
@@ -230,6 +263,7 @@ export default {
             
             formRef.validate().then((valid) => {
                 if (!valid) return;
+
                 const payload = this.mode === 'login' 
                     ? {
                         email: this.formData.email,
@@ -239,7 +273,8 @@ export default {
                         name: this.formData.name,
                         email: this.formData.email,
                         password: this.formData.password,
-                        password_confirmation: this.formData.password_confirmation
+                        password_confirmation: this.formData.password_confirmation,
+                        phone: normalizePhone(this.formData.phone)
                     };
     
                 const action = this.mode === 'login' ? 'login' : 'register';
@@ -252,8 +287,7 @@ export default {
                     );
                     this.handleClose();
                     this.resetForm();
-                    // Перенаправляем на дашборд после успешного входа/регистрации
-                    this.$router.push({ name: 'Dashboard' });
+                    this.$router.push('/dashboard');
                 }).catch((error) => {
                     const errorMessage = error.response?.data?.message || error.message || 'Сталася помилка';
                     ElMessage.error(errorMessage);
@@ -267,7 +301,7 @@ export default {
             ElMessage.info('Функція відновлення пароля буде доступна найближчим часом');
         },
         resetForm() {
-            this.formData = { name: '', email: '', password: '', password_confirmation: '' };
+            this.formData = { name: '', email: '', password: '', password_confirmation: '', phone: '' };
             this.showPassword = false;
             this.mode = 'login';
             this.$refs.loginFormRef?.resetFields();
