@@ -243,6 +243,7 @@ export default {
                     };
     
                 const action = this.mode === 'login' ? 'login' : 'register';
+                this.loading = true;
                 this.$store.dispatch(action, payload).then(() => {
                     ElMessage.success(
                         this.mode === 'login' 
@@ -251,8 +252,11 @@ export default {
                     );
                     this.handleClose();
                     this.resetForm();
+                    // Перенаправляем на дашборд после успешного входа/регистрации
+                    this.$router.push({ name: 'Dashboard' });
                 }).catch((error) => {
-                    ElMessage.error(error.message);
+                    const errorMessage = error.response?.data?.message || error.message || 'Сталася помилка';
+                    ElMessage.error(errorMessage);
                 }).finally(() => {
                     this.loading = false;
                 });

@@ -68,7 +68,7 @@
 
 <script>
 export default {
-    name: 'Footer'
+    name: 'LandingFooter'
 };
 </script>
 

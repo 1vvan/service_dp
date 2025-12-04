@@ -1,23 +1,23 @@
 <template>
     <div class="home-page">
-        <Header @loginClick="openAuthModal" />
+        <LandingHeader @loginClick="openAuthModal" />
         <HeroSection @getStarted="openAuthModal" />
-        <Footer />
+        <LandingFooter />
         <AuthModal :isOpen="isAuthModalOpen" @close="closeAuthModal" />
     </div>
 </template>
 
 <script>
-import Header from '../components/Header.vue';
-import Footer from '../components/Footer.vue';
-import HeroSection from '../components/HeroSection.vue';
-import AuthModal from '../components/AuthModal.vue';
+import LandingHeader from '../../layout/LandingHeader.vue';
+import LandingFooter from '../../layout/LandingFooter.vue';
+import HeroSection from './HeroSection.vue';
+import AuthModal from '../../modals/AuthModal.vue';
 
 export default {
     name: 'Home',
     components: {
-        Header,
-        Footer,
+        LandingHeader,
+        LandingFooter,
         HeroSection,
         AuthModal
     },
@@ -36,12 +36,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss" scoped>
-@use '../../scss/variables' as *;
-
-.home-page {
-    min-height: 100vh;
-    background: $background;
-}
-</style>

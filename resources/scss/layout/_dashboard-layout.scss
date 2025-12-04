@@ -1,0 +1,21 @@
+.dashboard-layout {
+    min-height: 100vh;
+    background: hsl(220 20% 10%);
+}
+
+.dashboard-main {
+    margin-left: 240px;
+    transition: margin-left 0.3s ease;
+
+    &.sidebar-collapsed {
+        margin-left: 64px;
+    }
+}
+
+.dashboard-content {
+    margin-top: 64px;
+    padding: 24px;
+    background: hsl(220 20% 10%);
+    min-height: calc(100vh - 64px);
+}
+

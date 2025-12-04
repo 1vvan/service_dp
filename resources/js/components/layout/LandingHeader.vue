@@ -26,10 +26,10 @@
 </template>
 
 <script>
-import Button from './ui/Button.vue';
+import Button from '../ui/Button.vue';
 
 export default {
-    name: 'Header',
+    name: 'LandingHeader',
     components: {
         Button
     },
