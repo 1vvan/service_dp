@@ -64,4 +64,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(BookingComment::class, 'user_id');
     }
+
+    public function cars(): HasMany
+    {
+        return $this->hasMany(ClientCar::class, 'client_id')
+            ->with(['carModel.brand']);
+    }
 }

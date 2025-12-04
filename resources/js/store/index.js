@@ -3,6 +3,7 @@ import axios from 'axios';
 import references from './modules/references';
 import { USER_ROLES } from '../constants/types';
 import bookings from './modules/bookings';
+import cars from './modules/cars';
 
 const token = localStorage.getItem('token');
 if (token) {
@@ -100,6 +101,7 @@ export default createStore({
     },
     modules: {
         references,
-        bookings
+        bookings,
+        cars
     }
 });

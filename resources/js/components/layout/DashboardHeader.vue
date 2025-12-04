@@ -1,6 +1,8 @@
 <template>
     <el-header :class="['dashboard-header', { 'sidebar-collapsed': isSidebarCollapsed }]">
         <div class="header-left">
+            <p class="title">Панель керування</p>
+            <p class="subtitle">Ласкаво просимо, {{ userName }}</p>
         </div>
         
         <div class="header-right">

@@ -31,3 +31,7 @@ Route::prefix('bookings')->group(function () {
     Route::get('/', [BookingController::class, 'index']);
     Route::get('/{userId}', [BookingController::class, 'getUserBookings']);
 });
+
+Route::prefix('cars')->group(function () {
+    Route::get('/{userId}', [CarController::class, 'getUserCars']);
+});

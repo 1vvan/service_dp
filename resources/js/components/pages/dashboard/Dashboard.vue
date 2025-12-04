@@ -25,7 +25,7 @@
                             <el-icon :size="32"><Van /></el-icon>
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ stats.clients }}</div>
+                            <div class="stat-value">{{ stats.cars }}</div>
                             <div class="stat-label">Мої авто</div>
                         </div>
                     </div>
@@ -48,77 +48,56 @@
                 <el-card class="dashboard-card">
                     <template #header>
                         <div class="card-header">
-                            <span>Останні бронювання</span>
-                            <el-button type="primary" link @click="$router.push('/dashboard/bookings')">
-                                Всі
-                            </el-button>
+                            <span>Найближчі бронювання</span>
                         </div>
                     </template>
                     <div class="recent-bookings">
-                        <div v-if="recentBookings.length === 0" class="empty-state">
+                        <div v-if="userBookings.length === 0" class="empty-state">
                             <el-empty description="Немає бронювань" />
                         </div>
                         <div v-else>
                             <div
-                                v-for="booking in recentBookings"
+                                v-for="booking in userBookings"
                                 :key="booking.id"
-                                class="booking-item"
+                                class="dashboard-card__item"
                             >
-                                <div class="booking-info">
-                                    <div class="booking-title">{{ booking.client?.full_name || 'Клієнт' }}</div>
-                                    <div class="booking-meta">
-                                        {{ formatDate(booking.date) }} • {{ booking.car?.brand?.name }} {{ booking.car?.model?.name }}
+                                <div class="dashboard-card_item-info">
+                                    <div class="title">{{ booking.client?.full_name || 'Клієнт' }}</div>
+                                    <div class="meta">
+                                        {{ formatDate(booking.date) }} • {{ booking.car?.license_plate }}
                                     </div>
                                 </div>
-                                <el-tag :type="getStatusType(booking.status?.name)">
-                                    {{ booking.status?.name || 'Невідомо' }}
-                                </el-tag>
+                                <span class="status">{{ booking.status?.name || 'Невідомо' }}</span>
                             </div>
                         </div>
                     </div>
                 </el-card>
-                
-                <!-- <el-card class="dashboard-card">
+                <el-card class="dashboard-card">
                     <template #header>
                         <div class="card-header">
-                            <span>Довідники</span>
+                            <span>Мої авто</span>
                         </div>
                     </template>
-                    <div class="references-info">
-                        <div class="reference-item">
-                            <span class="reference-label">Марки автомобілів:</span>
-                            <span class="reference-value">{{ references.carBrands.length }}</span>
+                    <div class="recent-bookings">
+                        <div v-if="userCars.length === 0" class="empty-state">
+                            <el-empty description="Немає авто" />
                         </div>
-                        <div class="reference-item">
-                            <span class="reference-label">Моделі автомобілів:</span>
-                            <span class="reference-value">{{ references.carModels.length }}</span>
-                        </div>
-                        <div class="reference-item">
-                            <span class="reference-label">Типи палива:</span>
-                            <span class="reference-value">{{ references.fuelTypes.length }}</span>
-                        </div>
-                        <div class="reference-item">
-                            <span class="reference-label">Типи двигунів:</span>
-                            <span class="reference-value">{{ references.engineTypes.length }}</span>
-                        </div>
-                        <div class="reference-item">
-                            <span class="reference-label">Типи КПП:</span>
-                            <span class="reference-value">{{ references.gearboxTypes.length }}</span>
-                        </div>
-                        <div class="reference-item">
-                            <span class="reference-label">Типи приводу:</span>
-                            <span class="reference-value">{{ references.driveUnitTypes.length }}</span>
-                        </div>
-                        <div class="reference-item">
-                            <span class="reference-label">Статуси бронювань:</span>
-                            <span class="reference-value">{{ references.bookingStatuses.length }}</span>
-                        </div>
-                        <div class="reference-item">
-                            <span class="reference-label">Послуги:</span>
-                            <span class="reference-value">{{ references.services.length }}</span>
+                        <div v-else>
+                            <div
+                                v-for="car in userCars"
+                                :key="car.id"
+                                class="dashboard-card__item"
+                            >
+                                <div class="dashboard-card_item-info">
+                                    <div class="title">{{ car.brand?.name }} {{ car.model?.name }}</div>
+                                    <div class="meta">
+                                        {{ car.license_plate }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </el-card> -->
+                </el-card>
             </div>
         </div>
     </DashboardLayout>
@@ -146,11 +125,9 @@ export default {
         return {
             stats: {
                 bookings: 0,
-                clients: 0,
-                services: 0,
+                cars: 0,
                 revenue: 0
             },
-            recentBookings: []
         };
     },
     computed: {
@@ -163,8 +140,13 @@ export default {
                 gearboxTypes: this.$store.getters['references/gearboxTypes'],
                 driveUnitTypes: this.$store.getters['references/driveUnitTypes'],
                 bookingStatuses: this.$store.getters['references/bookingStatuses'],
-                services: this.$store.getters['references/services']
             };
+        },
+        userCars() {
+            return this.$store.state.bookings.userBookings;
+        },
+        userBookings() {
+            return this.$store.state.cars.userCars;
         }
     },
     methods: {
@@ -190,6 +172,10 @@ export default {
                 'Скасовано': 'danger'
             };
             return statusMap[statusName] || 'info';
+        },
+        fetchUserCars() {
+            this.$store.dispatch('cars/fetchUserCars', this.$store.state.user.id);
+            this.$store.dispatch('bookings/fetchUserBookings', this.$store.state.user.id);
         }
     },
     mounted() {
