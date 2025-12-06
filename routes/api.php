@@ -30,7 +30,9 @@ Route::prefix('references')->group(function () {
 
 Route::prefix('bookings')->group(function () {
     Route::get('/', [BookingController::class, 'index']);
-    Route::get('/{userId}', [BookingController::class, 'getUserBookings']);
+    Route::get('/{client}', [BookingController::class, 'getUserBookings']);
+    Route::post('/{client}/create', [BookingController::class, 'createBooking']);
+    Route::post('/calculate-price', [BookingController::class, 'calculatePrice']);
 });
 
 Route::prefix('cars')->group(function () {

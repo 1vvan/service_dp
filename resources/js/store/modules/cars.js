@@ -13,7 +13,11 @@ const mutations = {
 };
 
 const actions = {
-    fetchUserCars({ commit }, clientId) {
+    fetchUserCars({ commit }, clientId, force = false) {
+        if (!force && state.userCars.length > 0) {
+            return Promise.resolve(state.userCars);
+        }
+
         return axios.get(`/api/cars/${clientId}`)
             .then(response => {
                 commit('setUserCars', response.data);
@@ -25,7 +29,8 @@ const actions = {
     createCar({ dispatch }, payload) {
         return axios.post(`/api/cars/${payload.client_id}/create`, payload.data)
             .then(response => {
-                dispatch('fetchUserCars', payload.client_id);
+                dispatch('fetchUserCars', payload.client_id, true);
+                return response;
             })
             .catch(error => {
                 return Promise.reject(error);

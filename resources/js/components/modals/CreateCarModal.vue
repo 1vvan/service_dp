@@ -6,17 +6,17 @@
         :close-on-click-modal="false"
         :close-on-press-escape="true"
         @close="handleClose"
-        class="create-car-modal-dialog"
+        class="create-form-modal-dialog"
     >
         <template #header>
-            <div class="create-car-modal-header">
-                <h2 class="create-car-modal-title">
+            <div class="create-form-modal-header">
+                <h2 class="create-form-modal-title">
                     <div class="icon">
                         <el-icon><Van /></el-icon>
                     </div>
                     Додати автомобіль
                 </h2>
-                <p class="create-car-modal-description">
+                <p class="create-form-modal-description">
                     Додати новий авто до вашого гаражу.
                 </p>
             </div>
@@ -108,7 +108,7 @@
         </el-form>
 
         <template #footer>
-            <div class="create-car-modal-footer">
+            <div class="create-form-modal-footer">
                 <el-button @click="handleClose">Скасувати</el-button>
                 <el-button type="primary" @click="handleSubmit">Додати автомобіль</el-button>
             </div>
@@ -210,7 +210,6 @@ export default {
         },
         handleSubmit() {
             this.loading = true;
-            console.log(this.user);
             const formRef = this.$refs.createCarFormRef;
             
             if (!formRef) return;

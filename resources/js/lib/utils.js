@@ -129,3 +129,10 @@ export function pluralize(count, one, few, many) {
     
     return many;
 }
+
+export function formatPrice(price) {
+    return new Intl.NumberFormat('uk-UA', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(price);
+}

@@ -60,6 +60,43 @@
         & .orange-text {
             color: $orange-500 !important;
         }
+
+        & .status-badge {
+            padding: 4px 8px !important;
+            border-radius: 10px !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            line-height: 1.3 !important;
+
+            &.new {
+                background-color: $gray-400 !important;
+                color: $gray-700 !important;
+            }
+
+            &.confirmed {
+                background-color: $green-500 !important;
+                color: $gray-700 !important;
+            }
+
+            &.in-progress {
+                background-color: $orange-500 !important;
+                color: $gray-700 !important;
+            }
+
+            &.completed {
+                background-color: $green-500 !important;
+                color: $gray-700 !important;
+            }
+
+            &.cancelled {
+                background-color: $red-500 !important;
+                color: $gray-700 !important;
+            }
+        }
+
+        & .white-text {
+            color: $foreground !important;
+        }
     }
 
     & .el-table__row {
