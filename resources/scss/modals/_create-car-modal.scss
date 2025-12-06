@@ -76,7 +76,7 @@
 
     .el-form {
         .el-form-item {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1rem;
         }
 
         .el-form-item__label {
@@ -91,15 +91,27 @@
             font-size: 0.75rem;
             padding-top: 0.25rem;
         }
+
+        .form-row {
+            width: 100%;
+            display: flex;
+            gap: 1rem;
+
+            & .el-form-item {
+                width: 100%;
+            }
+        }
     }
 
     .el-input {
         .el-input__wrapper {
-            background-color: $secondary;
-            border: 1px solid $border;
+            background-color: $gray-750;
+            border: 1px solid $gray-700;
             border-radius: $border-radius-md;
-            box-shadow: none;
+            box-shadow: none !important;
+            padding: 8px 15px !important;
             transition: all 0.2s ease;
+            height: 36px;
             
             &:hover {
                 border-color: rgba($primary, 0.5);
@@ -112,6 +124,8 @@
         }
 
         .el-input__inner {
+            height: auto !important;
+            max-height: 21px !important;
             color: $foreground;
             background-color: transparent;
             
@@ -127,17 +141,27 @@
         .el-input__suffix {
             color: $muted-foreground;
         }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
     }
 
     .el-select {
         box-shadow: none !important;
         .el-select__wrapper {
+            height: 36px;
             background-color: $gray-750;
             border: 1px solid $gray-700;
             border-radius: $border-radius-md;
             box-shadow: none !important;
             transition: all 0.2s ease;
-            padding: 8px 12px !important;
+            padding: 8px 15px !important;
 
             &:hover {
                 border-color: $orange-500;
@@ -155,7 +179,18 @@
         }
     }
 
+    .create-car-modal-footer {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+    }
+
     .el-button {
+        width: 50%;
+        padding: 17px 20px !important;
+        margin: 0 !important;
         border-radius: $border-radius-lg;
         font-weight: 600;
         transition: all 0.3s ease;
@@ -188,43 +223,6 @@
             padding: 0 2rem;
             font-size: 1rem;
         }
-    }
-
-    .el-link {
-        font-size: 0.875rem;
-        
-        &.el-link--primary {
-            color: $primary;
-            
-            &:hover {
-                color: $primary-hover;
-            }
-        }
-    }
-
-    .el-divider {
-        border-color: $border;
-        margin: 1.5rem 0;
-        
-        .el-divider__text {
-            background-color: $card;
-            color: $muted-foreground;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            padding: 0 0.5rem;
-        }
-    }
-
-    .text-right {
-        text-align: right;
-    }
-
-    .w-full {
-        width: 100%;
-    }
-
-    .create-car-modal-footer {
-        width: 100%;
     }
 
     .el-button:not(.el-button--primary) {

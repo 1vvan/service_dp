@@ -1,6 +1,8 @@
 @use 'variables' as *;
 @use 'mixins' as *;
 
+@use 'global';
+
 @use 'components/buttons';
 @use 'components/cards';
 @use 'components/forms';

@@ -34,5 +34,6 @@ Route::prefix('bookings')->group(function () {
 });
 
 Route::prefix('cars')->group(function () {
-    Route::get('/{userId}', [CarsController::class, 'getUserCars']);
+    Route::get('/{clientId}', [CarsController::class, 'getUserCars']);
+    Route::post('/{client}/create', [CarsController::class, 'createCar']);
 });

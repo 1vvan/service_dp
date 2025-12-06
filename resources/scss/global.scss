@@ -1,0 +1,20 @@
+@use 'variables' as *;
+
+.el-loading-mask {
+    background-color: transparent !important;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(4px);
+        background-color: #ffffff00;
+    }
+
+    circle {
+        stroke: $orange-500 !important;
+    }
+}

@@ -21,6 +21,12 @@ class AuthController extends Controller
             'phone' => $request->phone,
         ]);
 
+        if (!$client) {
+            return response()->json([
+                'message' => 'Помилка при створенні клієнта',
+            ], 500);
+        }
+
         $user = User::create([
             'full_name' => $request->name,
             'email' => $request->email,

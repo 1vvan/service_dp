@@ -19,6 +19,7 @@
         }
 
         .create-car-btn {
+            cursor: pointer;
             background-color: $orange-500;
             border: none;
             border-radius: 8px;
@@ -32,9 +33,14 @@
             justify-content: center;
             gap: 8px;
 
-
             & .el-icon {
                 color: #000;
+            }
+
+            &:hover {
+                background-color: $orange-600;
+                transform: scale(1.02);
+                transition: all 0.3s ease;
             }
         }
     }

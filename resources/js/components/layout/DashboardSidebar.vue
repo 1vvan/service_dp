@@ -77,7 +77,7 @@ export default {
                     path: '/dashboard'
                 },
                 {
-                    name: 'Бронювання',
+                    name: 'Запис',
                     icon: 'Calendar',
                     path: '/dashboard/bookings'
                 },

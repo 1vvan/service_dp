@@ -23,12 +23,39 @@ class ClientCar extends Model
         'license_plate',
     ];
 
+    protected $appends = ['full_name', 'brand_logo'];
+
     protected function casts(): array
     {
         return [
             'car_year' => 'integer',
             'mileage' => 'integer',
         ];
+    }
+
+    public function getBrandLogoAttribute(): ?string
+    {
+        return $this->carModel->brand->logo_url;
+    }
+
+    public function getFullNameAttribute(): ?string
+    {
+        if (!$this->relationLoaded('carModel')) {
+            $this->load('carModel.brand');
+        }
+
+        if (!$this->carModel) {
+            return null;
+        }
+
+        if (!$this->carModel->relationLoaded('brand')) {
+            $this->carModel->load('brand');
+        }
+
+        $brandName = $this->carModel->brand ? $this->carModel->brand->name : '';
+        $modelName = $this->carModel->name;
+
+        return trim($brandName . ' ' . $modelName);
     }
 
     public function client(): BelongsTo

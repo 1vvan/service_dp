@@ -29,32 +29,97 @@
             label-position="top"
             @submit.prevent="handleSubmit"
         >
-            <el-form-item label="Марка" prop="brand">
-                <el-select
-                    v-model="formData.brand"
-                    placeholder="Виберіть марку"
-                    :options="carBrands"
-                    :props="{ label: 'name', value: 'id' }"
-                    clearable
-                />
-            </el-form-item>
-            <el-form-item label="Модель" prop="model">
-                <el-select
-                    v-model="formData.model"
-                    placeholder="Виберіть модель"
-                    :options="filteredCarModels"
-                    :disabled="!formData.brand"
-                    :props="{ label: 'name', value: 'id' }"
-                    clearable
-                />
-            </el-form-item>
+            <div class="form-row">
+                <el-form-item label="Марка" prop="brand">
+                    <el-select
+                        v-model="formData.brand"
+                        placeholder="Виберіть марку"
+                        :options="carBrands"
+                        :props="{ label: 'name', value: 'id' }"
+                        clearable
+                    />
+                </el-form-item>
+                <el-form-item label="Модель" prop="model">
+                    <el-select
+                        v-model="formData.model"
+                        placeholder="Виберіть модель"
+                        :options="filteredCarModels"
+                        :disabled="!formData.brand"
+                        :props="{ label: 'name', value: 'id' }"
+                        clearable
+                    />
+                </el-form-item>
+            </div>
+
+            <div class="form-row">
+                <el-form-item label="Рік випуску" prop="year">
+                    <el-select
+                        v-model="formData.year"
+                        placeholder="Виберіть рік випуску"
+                        :options="carYears"
+                        :props="{ label: 'name', value: 'id' }"
+                        clearable
+                    >
+                        <el-option
+                            v-for="year in carYears"
+                            :key="year.id"
+                            :label="year.name"
+                            :value="year.id"
+                        />
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="Пробіг" prop="mileage">
+                    <el-input
+                        v-model="formData.mileage"
+                        placeholder="Введіть пробіг"
+                        type="number"
+                        min="0"
+                        max="1000000"
+                        clearable
+                    />
+                </el-form-item>
+            </div>
+
+            <div class="form-row">
+                <el-form-item label="Номерний знак" prop="licence_plate">
+                    <el-input
+                        v-model="formData.licence_plate"
+                        placeholder="АА 0000 АА"
+                        type="text"
+                        clearable
+                        maxlength="10"
+                        @input="formatLicencePlateValue"
+                        style="text-transform: uppercase;"
+                    />
+                </el-form-item>
+            </div>
+
+            <div class="form-row">
+                <el-form-item label="VIN" prop="vin">
+                    <el-input
+                        v-model="formData.vin"
+                        placeholder="ZFFKW64A690167250"
+                        type="text"
+                        clearable
+                    />
+                </el-form-item>
+            </div>
         </el-form>
+
+        <template #footer>
+            <div class="create-car-modal-footer">
+                <el-button @click="handleClose">Скасувати</el-button>
+                <el-button type="primary" @click="handleSubmit">Додати автомобіль</el-button>
+            </div>
+        </template>
     </el-dialog>
 </template>
 
 <script>
 import { ElMessage } from 'element-plus';
 import { Van } from '@element-plus/icons-vue';
+import { formatLicencePlate } from '../../lib/utils';
 
 export default {
     name: 'CreateCarModal',
@@ -76,7 +141,8 @@ export default {
                 model: null,
                 licence_plate: null,
                 vin: null,
-                year: null
+                year: null,
+                mileage: null
             },
             formRules: {
                 brand: [
@@ -90,6 +156,9 @@ export default {
                 ],
                 vin: [
                     { required: true, message: 'Введіть VIN', trigger: 'change' }
+                ],
+                mileage: [
+                    { required: true, message: 'Введіть пробіг', trigger: 'change' }
                 ],
                 year: [
                     { required: true, message: 'Введіть рік випуску', trigger: 'change' }
@@ -108,6 +177,9 @@ export default {
                 }
             }
         },
+        user() {
+            return this.$store.state.user;
+        },
         carModels() {
             return this.$store.state.references.carModels;
         },
@@ -116,6 +188,12 @@ export default {
         },
         filteredCarModels() {
             return this.carModels.filter(model => model.brand_id === this.formData.brand) || [];
+        },
+        carYears() {
+            return Array.from({ length: new Date().getFullYear() + 1 - 1900 }, (_, i) => ({
+                id: i + 1900,
+                name: i + 1900
+            })).reverse();
         }
     },
     watch: {
@@ -127,9 +205,12 @@ export default {
     },
     methods: {
         handleClose() {
+            this.resetForm();
             this.$emit('close');
         },
         handleSubmit() {
+            this.loading = true;
+            console.log(this.user);
             const formRef = this.$refs.createCarFormRef;
             
             if (!formRef) return;
@@ -138,18 +219,38 @@ export default {
                 if (!valid) return;
 
                 const payload = {
-                    model: this.formData.model,
-                    licence_plate: this.formData.licence_plate,
-                    vin: this.formData.vin,
-                    year: this.formData.year
+                    data: {
+                        model: this.formData.model,
+                        licence_plate: this.formData.licence_plate,
+                        vin: this.formData.vin,
+                        year: this.formData.year,
+                        mileage: this.formData.mileage,
+                        brand_id: this.formData.brand,
+                    },
+                    client_id: this.user.client_id,
                 };
-    
-                console.log(payload);
+
+                this.$store.dispatch('cars/createCar', payload)
+                    .then(() => {
+                        ElMessage.success('Автомобіль успішно додано');
+                        this.handleClose();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        ElMessage.error(error.response?.data?.message || 'Помилка при додаванні автомобіля');
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
             });
         },
         resetForm() {
-            this.formData = { model: null, licence_plate: null, vin: null, year: null };
+            this.loading = false;
+            this.formData = { brand: null, model: null, licence_plate: null, vin: null, year: null, mileage: null };
             this.$refs.createCarFormRef?.resetFields();
+        },
+        formatLicencePlateValue(value) {
+            this.formData.licence_plate = formatLicencePlate(value);
         }
     },
 };

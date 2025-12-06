@@ -174,7 +174,7 @@ export default {
             return statusMap[statusName] || 'info';
         },
         fetchUserData() {
-            this.$store.dispatch('cars/fetchUserCars', this.$store.state.user.id);
+            this.$store.dispatch('cars/fetchUserCars', this.$store.state.user.client_id);
             this.$store.dispatch('bookings/fetchUserBookings', this.$store.state.user.id);
         }
     },
