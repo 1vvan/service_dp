@@ -31,16 +31,33 @@
                 <span class="white-text">{{ formatPrice(scope.row.total_price) }} грн</span>
             </template>
         </el-table-column>
+        <el-table-column label="Дії" width="100" align="center">
+            <template #default="scope">
+                <el-dropdown placement="bottom">
+                    <el-button> <el-icon><Grid /></el-icon>  </el-button>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item @click="downloadReceipt(scope.row.id)"><el-icon><Tickets /></el-icon> Скачати чек</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+            </template>
+        </el-table-column>
     </el-table>
 </template>
 
 <script>
 import { formatPrice } from '../../../../../lib/utils';
 import { BOOKING_STATUS_CLASS_MAPPING as bookingStatusClassMapping } from '../../../../../constants/mapping';
-
+import { Grid, Tickets } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 
 export default {
     name: 'BookingsTable',
+    components: {
+        Tickets,
+        Grid
+    },
     props: {
         bookings: {
             type: Array,
@@ -59,6 +76,23 @@ export default {
     methods: {
         formatPrice(price) {
             return formatPrice(price);
+        },
+        async downloadReceipt(bookingId) {
+            this.$store.dispatch('bookings/downloadReceipt', bookingId)
+                .then(response => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', `receipt-booking-${bookingId}.pdf`);
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Помилка при скачуванні чека:', error);
+                    ElMessage.error('Помилка при скачуванні чека');
+                });
         }
     }
 }

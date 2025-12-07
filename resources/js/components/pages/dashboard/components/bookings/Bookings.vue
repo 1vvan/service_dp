@@ -2,7 +2,7 @@
     <DashboardLayout>
         <div class="bookings-container">
             <div class="top">
-                <h1 class="title">Ви маєте <span class="count">{{ bookings.length }}</span> бронювань</h1>
+                <h1 class="title">Ви маєте <span class="count">{{ bookings.length }}</span> {{ bookingsWord }}</h1>
 
                 <button class="create-booking-btn" @click="openCreateBookingModal">
                     <el-icon><Plus /></el-icon>
@@ -18,6 +18,7 @@
 
 <script>
 import DashboardLayout from '../../../../../layouts/DashboardLayout.vue';
+import { pluralize } from '../../../../../lib/utils';
 import CreateBookingModal from '../../../../modals/CreateBookingModal.vue';
 import BookingsTable from './BookingsTable.vue';
 
@@ -40,6 +41,14 @@ export default {
         },
         bookings() {
             return this.$store.state.bookings.userBookings || [];
+        },
+        bookingsWord() {
+            return pluralize(
+                this.bookings.length,
+                'запис',
+                'запис',
+                'записів'
+            );
         }
     },
     mounted() {

@@ -46,6 +46,18 @@ const actions = {
             .catch(error => {
                 return Promise.reject(error);
             });
+    },
+
+    downloadReceipt({}, bookingId) {
+        return axios.get(`/api/bookings/${bookingId}/receipt`, {
+            responseType: 'blob'
+        })
+            .then(response => {
+                return response;
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
     }
 };
 

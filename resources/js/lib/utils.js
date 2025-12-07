@@ -1,3 +1,10 @@
+import moment from 'moment';
+import 'moment/locale/uk';
+
+moment.locale('uk');
+
+export { moment };
+
 export function cn(...classes) {
     return classes
         .filter(Boolean)
@@ -135,4 +142,23 @@ export function formatPrice(price) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     }).format(price);
+}
+
+export function formatDate(date, format = 'DD.MM.YYYY') {
+    if (!date) return '';
+    return moment(date).format(format);
+}
+
+export function formatDateTime(date, format = 'DD.MM.YYYY HH:mm') {
+    if (!date) return '';
+    return moment(date).format(format);
+}
+
+export function formatDateRelative(date) {
+    if (!date) return '';
+    return moment(date).fromNow();
+}
+
+export function isValidDate(date) {
+    return moment(date).isValid();
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ClientCar extends Model
 {
@@ -91,5 +92,11 @@ class ClientCar extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'car_id');
+    }
+
+    public function latestBooking(): HasOne
+    {
+        return $this->hasOne(Booking::class, 'car_id')
+            ->latestOfMany('created_at');
     }
 }

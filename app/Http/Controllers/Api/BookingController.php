@@ -8,6 +8,7 @@ use App\Http\Requests\Booking\CreateBookingRequest;
 use App\Models\Booking;
 use App\Models\Client;
 use Illuminate\Http\JsonResponse;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BookingController extends Controller
 {
@@ -65,5 +66,17 @@ class BookingController extends Controller
         $priceDetails = $this->bookingRepository->calculatePriceDetails($carId, $serviceIds);
 
         return response()->json($priceDetails);
+    }
+
+    public function generateReceipt(Booking $booking)
+    {
+        $booking->load(['client', 'car.carModel.brand', 'services', 'status']);
+        
+        $pdf = Pdf::loadView('receipts.booking', [
+            'booking' => $booking,
+            'priceCalculation' => $booking->price_calculation ?? [],
+        ]);
+
+        return $pdf->download('receipt-booking-' . $booking->id . '.pdf');
     }
 }

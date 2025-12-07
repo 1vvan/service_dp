@@ -31,7 +31,7 @@ class CarsController extends Controller
 
         $cars = ClientCar::query()
             ->where('client_id', $clientId)
-            ->with('carModel.brand', 'fuelType', 'engineType', 'gearboxType', 'driveUnitType')
+            ->with('carModel.brand', 'latestBooking', 'fuelType', 'engineType', 'gearboxType', 'driveUnitType')
             ->get();
 
         return response()->json($cars);

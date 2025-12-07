@@ -22,8 +22,8 @@ const routes = [
         name: 'Bookings',
         component: () => import('../components/pages/dashboard/components/bookings/Bookings.vue'),
         meta: {
-            title: 'Бронювання',
-            subtitle: 'Керування бронюваннями',
+            title: 'Записи',
+            subtitle: 'Керування записами',
             requiresAuth: true
         }
     },

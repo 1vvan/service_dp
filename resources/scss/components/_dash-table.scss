@@ -140,4 +140,19 @@
             }
         }
     }
+
+    & .el-dropdown {
+        & .el-tooltip__trigger {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background-color: $orange-500 !important;
+            border: none;
+            border-radius: 50%;
+            color: $background !important;
+        }
+    }
 }

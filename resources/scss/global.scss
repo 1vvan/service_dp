@@ -18,3 +18,37 @@
         stroke: $orange-500 !important;
     }
 }
+
+.el-dropdown__popper {
+    border: none !important;
+    box-shadow: $shadow-card !important;
+    border-radius: $border-radius-md !important;
+    background-color: $gray-700 !important;
+
+    & .el-popper__arrow {
+        &::before {
+            border-color: $gray-700 !important;
+            background-color: $gray-700 !important;
+        }
+    }
+
+    & .el-dropdown-menu {
+        border-radius: $border-radius-md !important;
+        background-color: $gray-700 !important;
+        border: 1px solid $gray-700 !important;
+
+        & .el-dropdown-menu__item {
+            color: $foreground !important;
+
+            &:hover {
+                background-color: $orange-500 !important;
+                color: $background !important;
+                transition: all 0.3s ease !important;
+            }
+        }
+    }
+}
+
+.orange-text {
+    color: $orange-500 !important;
+}
