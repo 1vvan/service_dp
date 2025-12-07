@@ -38,6 +38,7 @@
                     <template #dropdown>
                         <el-dropdown-menu>
                             <el-dropdown-item @click="downloadReceipt(scope.row.id)"><el-icon><Tickets /></el-icon> Скачати чек</el-dropdown-item>
+                            <el-dropdown-item @click="editBooking(scope.row.id)"><el-icon><Edit /></el-icon> Редагувати</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -49,14 +50,15 @@
 <script>
 import { formatPrice } from '../../../../../lib/utils';
 import { BOOKING_STATUS_CLASS_MAPPING as bookingStatusClassMapping } from '../../../../../constants/mapping';
-import { Grid, Tickets } from '@element-plus/icons-vue';
+import { Grid, Tickets, Edit } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 
 export default {
     name: 'BookingsTable',
     components: {
         Tickets,
-        Grid
+        Grid,
+        Edit
     },
     props: {
         bookings: {
@@ -93,6 +95,9 @@ export default {
                     console.error('Помилка при скачуванні чека:', error);
                     ElMessage.error('Помилка при скачуванні чека');
                 });
+        },
+        editBooking(bookingId) {
+            this.$emit('edit-booking', bookingId);
         }
     }
 }

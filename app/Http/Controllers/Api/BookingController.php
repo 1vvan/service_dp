@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\Booking\BookingRepositoryInterface;
 use App\Http\Requests\Booking\CreateBookingRequest;
+use App\Http\Requests\Booking\UpdateBookingRequest;
 use App\Models\Booking;
 use App\Models\Client;
 use Illuminate\Http\JsonResponse;
@@ -33,6 +34,27 @@ class BookingController extends Controller
         $bookings = $client->bookings()->with('car', 'services', 'status')->get();
 
         return response()->json($bookings);
+    }
+
+    public function getBooking(Booking $booking)
+    {
+        return response()->json($booking->load('car', 'services', 'status'));
+    }
+
+    public function updateBooking(Booking $booking, UpdateBookingRequest $request): JsonResponse
+    {
+        try {
+            $booking = $this->bookingRepository->updateBooking($booking->id, $request->validated());
+
+            return response()->json([
+                'message' => 'Запис успішно оновлений',
+                'booking' => $booking,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Помилка при оновленні запису: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function createBooking(Client $client, CreateBookingRequest $request): JsonResponse

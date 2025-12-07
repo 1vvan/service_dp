@@ -9,10 +9,10 @@
                     <span class="text">Створити бронювання</span>
                 </button>
             </div>
-            <BookingsTable :bookings="bookings" :loading="loading" />
+            <BookingsTable :bookings="bookings" :loading="loading" @edit-booking="editBooking" />
         </div>
 
-        <CreateBookingModal :isOpen="isCreateBookingModalOpen" @close="closeCreateBookingModal" />
+        <CreateBookingModal :isOpen="isCreateBookingModalOpen" :editingBookingId="editingBookingId" @close="closeCreateBookingModal" />
     </DashboardLayout>
 </template>
 
@@ -33,6 +33,7 @@ export default {
         return {
             isCreateBookingModalOpen: false,
             loading: false,
+            editingBookingId: null,
         }
     },
     computed: {
@@ -57,7 +58,7 @@ export default {
     methods: {
         getBookings() {
             this.loading = true;
-            this.$store.dispatch('bookings/fetchUserBookings', this.user.client_id, true)
+            this.$store.dispatch('bookings/fetchUserBookings', { clientId: this.user.client_id, force: true })
                 .then(() => {
                     this.loading = false;
                 })
@@ -70,8 +71,12 @@ export default {
         },
         closeCreateBookingModal() {
             this.isCreateBookingModalOpen = false;
+            this.editingBookingId = null;
+        },
+        editBooking(bookingId) {
+            this.isCreateBookingModalOpen = true;
+            this.editingBookingId = bookingId;
         }
     }
 };
 </script>
-

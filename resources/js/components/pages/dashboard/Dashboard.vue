@@ -55,22 +55,20 @@
                         <div v-if="userBookings.length === 0" class="empty-state">
                             <el-empty description="Немає записів" />
                         </div>
-                        <div v-else>
-                            <div
-                                v-for="booking in userBookings"
-                                :key="booking.id"
-                                class="dashboard-card__item"
-                            >
-                                <div class="dashboard-card_item-info">
-                                    <div class="text">
-                                        <div class="title">{{ booking.services.map(service => service.name).join(', ') }}</div>
-                                        <div class="meta">
-                                            {{ booking.date }} • <span class="orange-text">{{ booking.car?.license_plate }}</span>
-                                        </div>
+                        <div v-else
+                            v-for="booking in userBookings.slice(0, 3)"
+                            :key="booking.id"
+                            class="dashboard-card__item"
+                        >
+                            <div class="dashboard-card_item-info">
+                                <div class="text">
+                                    <div class="title">{{ booking.services.map(service => service.name).join(', ') }}</div>
+                                    <div class="meta">
+                                        {{ booking.date }} • <span class="orange-text">{{ booking.car?.license_plate }}</span>
                                     </div>
                                 </div>
-                                <span class="status" :class="BOOKING_STATUS_CLASS_MAPPING[booking.status_id]">{{ booking.status?.name || 'Невідомо' }}</span>
                             </div>
+                            <span class="status" :class="BOOKING_STATUS_CLASS_MAPPING[booking.status_id]">{{ booking.status?.name || 'Невідомо' }}</span>
                         </div>
                     </div>
                 </el-card>
@@ -184,7 +182,7 @@ export default {
         fetchUserData() {
             Promise.all([
                 this.$store.dispatch('cars/fetchUserCars', this.$store.state.user.client_id),
-                this.$store.dispatch('bookings/fetchUserBookings', this.$store.state.user.client_id),
+                this.$store.dispatch('bookings/fetchUserBookings', { clientId: this.$store.state.user.client_id }),
                 this.$store.dispatch('dash/fetchStats', this.$store.state.user.client_id)
             ]).then(() => {
                 this.isLoading = false;

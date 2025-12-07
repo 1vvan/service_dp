@@ -13,14 +13,25 @@ const mutations = {
 };
 
 const actions = {
-    fetchUserBookings({ commit }, clientId, force = false) {
+    fetchUserBookings({ commit }, { clientId, force = false }) {
         if (!force && state.userBookings.length > 0) {
             return Promise.resolve(state.userBookings);
         }
 
-        return axios.get(`/api/bookings/${clientId}`)
+        return axios.get(`/api/clients/${clientId}/bookings`)
             .then(response => {
                 commit('setUserBookings', response.data);
+                return response.data;
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    },
+
+    getBooking({ }, bookingId) {
+        return axios.get(`/api/bookings/${bookingId}`)
+            .then(response => {
+                return response.data;
             })
             .catch(error => {
                 return Promise.reject(error);
@@ -29,8 +40,19 @@ const actions = {
 
     createBooking({ dispatch }, payload) {
         return axios.post(`/api/bookings/${payload.client_id}/create`, payload.data)
-            .then(response => {
-                dispatch('fetchUserBookings', payload.client_id, true);
+            .then(async response => {
+                await dispatch('fetchUserBookings', { clientId: payload.client_id, force: true });
+                return response;
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    },
+
+    updateBooking({ dispatch }, payload) {
+        return axios.post(`/api/bookings/${payload.booking_id}/update`, payload.data)
+            .then(async response => {
+                await dispatch('fetchUserBookings', { clientId: payload.client_id, force: true });
                 return response;
             })
             .catch(error => {

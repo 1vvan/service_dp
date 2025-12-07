@@ -29,12 +29,17 @@ Route::prefix('references')->group(function () {
     Route::get('/services', [ReferenceController::class, 'services']);
 });
 
+Route::prefix('clients')->group(function () {
+    Route::get('/{client}/bookings', [BookingController::class, 'getUserBookings']);
+});
+
 Route::prefix('bookings')->group(function () {
     Route::get('/', [BookingController::class, 'index']);
-    Route::get('/{client}', [BookingController::class, 'getUserBookings']);
+    Route::get('/{booking}', [BookingController::class, 'getBooking']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{client}/create', [BookingController::class, 'createBooking']);
+        Route::post('/{booking}/update', [BookingController::class, 'updateBooking']);
         Route::post('/calculate-price', [BookingController::class, 'calculatePrice']);
         Route::get('/{booking}/receipt', [BookingController::class, 'generateReceipt']);
     });

@@ -121,4 +121,33 @@ class BookingRepository implements BookingRepositoryInterface
             'total_price' => $totalPrice,
         ];
     }
+
+    public function updateBooking(int $bookingId, array $data): Booking
+    {
+        $booking = Booking::find($bookingId);
+        if (!$booking) {
+            throw new \Exception('Запис не знайдений');
+        }
+
+        $priceDetails = $this->calculatePriceDetails($data['car_id'], $data['service_ids']);
+        $totalPrice = $priceDetails['total_price'];
+
+        $booking->update([
+            'car_id' => $data['car_id'],
+            'date' => $data['date'],
+            'description' => $data['comment'] ?? null,
+            'total_price' => $totalPrice,
+            'price_calculation' => $priceDetails,
+        ]);
+
+        if (!empty($data['service_ids'])) {
+            $booking->services()->sync($data['service_ids']);
+        } else {
+            $booking->services()->detach();
+        }
+
+        $booking->load(['car.carModel.brand', 'services', 'client', 'status']);
+
+        return $booking;
+    }
 }

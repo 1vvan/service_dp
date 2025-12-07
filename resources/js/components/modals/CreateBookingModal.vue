@@ -14,10 +14,10 @@
                     <div class="icon">
                         <el-icon><Calendar /></el-icon>
                     </div>
-                    Зробити запис
+                    {{ editingBookingId ? 'Редагувати запис' : 'Зробити запис' }}
                 </h2>
                 <p class="create-form-modal-description">
-                    Зробіть запис на сервіс вашого автомобіля.
+                    {{ editingBookingId ? 'Редагуйте запис на сервіс вашого автомобіля.' : 'Зробіть запис на сервіс вашого автомобіля.' }}
                 </p>
             </div>
         </template>
@@ -35,6 +35,7 @@
                         v-model="formData.car"
                         placeholder="Виберіть автомобіль"
                         clearable
+                        :disabled="editingBookingId"
                     >
                         <el-option
                             v-for="car in cars"
@@ -118,7 +119,7 @@
         <template #footer>
             <div class="create-form-modal-footer">
                 <el-button @click="handleClose">Скасувати</el-button>
-                <el-button type="primary" @click="handleSubmit">Створити запис</el-button>
+                <el-button type="primary" @click="handleSubmit">{{ editingBookingId ? 'Оновити запис' : 'Створити запис' }}</el-button>
             </div>
         </template>
     </el-dialog>
@@ -139,6 +140,10 @@ export default {
         isOpen: {
             type: Boolean,
             default: false
+        },
+        editingBookingId: {
+            type: Number,
+            default: null
         }
     },
     emits: ['close'],
@@ -166,7 +171,9 @@ export default {
                 date: [
                     { required: true, message: 'Виберіть дату', trigger: 'change' }
                 ],
-            }
+            },
+            unavailableDates: new Set(),
+            loadingBookings: false
         };
     },
     computed: {
@@ -195,58 +202,155 @@ export default {
     },
     watch: {
         isOpen(newVal) {
+            if (newVal) {
+                if (this.editingBookingId) {
+                    this.initEditBooking();
+                }
+                if (this.user?.client_id) {
+                    this.loadClientBookings();
+                }
+            }
             if (!newVal) {
                 this.resetForm();
             }
         },
         'formData.car'() {
             this.calculatePrice();
+            if (this.user?.client_id) {
+                this.loadClientBookings();
+            }
         },
         'formData.services'() {
             this.calculatePrice();
+        },
+        'formData.date'(newDate) {
+            if (newDate) {
+                const selectedMoment = this.$moment(newDate, 'YYYY-MM-DD HH:mm:ss');
+                const now = this.$moment();
+                const minBookingTime = now.clone().subtract(5, 'minutes');
+                
+                if (selectedMoment.isBefore(minBookingTime)) {
+                    ElMessage.warning('Мінімальний час для бронювання - через 5 хвилин від поточного часу');
+                    this.$nextTick(() => {
+                        this.formData.date = null;
+                        this.$refs.createBookingFormRef?.validateField('date');
+                    });
+                }
+            }
         }
     },
     methods: {
+        initEditBooking() {
+            this.$store.dispatch('bookings/getBooking', this.editingBookingId).then(response => {
+                let formattedDate = null;
+                if (response.date) {
+                    formattedDate = this.$moment(response.date, 'DD.MM.YYYY HH:mm').format('YYYY-MM-DD HH:mm:ss');
+                }
+                
+                this.formData = {
+                    car: response.car_id,
+                    services: response.services.map(service => service.id),
+                    date: formattedDate,
+                    comment: response.description
+                };
+                this.calculatePrice();
+            });
+        },
         disabledDate(time) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            return time.getTime() < today.getTime();
-        },
-        disabledTime(time, date) {
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             
-            if (date) {
-                const selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-                const isToday = selectedDate.getTime() === today.getTime();
-                
-                if (isToday) {
-                    const currentHour = now.getHours();
-                    const currentMinute = now.getMinutes();
-                    
-                    return {
-                        disabledHours: () => {
-                            const hours = [];
-                            for (let i = 0; i < currentHour; i++) {
-                                hours.push(i);
-                            }
-                            return hours;
-                        },
-                        disabledMinutes: (selectedHour) => {
-                            if (selectedHour === currentHour) {
-                                const minutes = [];
-                                for (let i = 0; i <= currentMinute; i++) {
-                                    minutes.push(i);
-                                }
-                                return minutes;
-                            }
-                            return [];
-                        },
-                    };
+            if (time.getTime() < today.getTime()) {
+                return true;
+            }
+            
+            if (this.user?.client_id && this.unavailableDates.size > 0) {
+                const dateKey = this.$moment(time).format('YYYY-MM-DD');
+                if (this.unavailableDates.has(dateKey)) {
+                    return true;
                 }
             }
             
-            return {};
+            return false;
+        },
+        disabledTime(time, date) {
+            const now = this.$moment();
+            const today = this.$moment().startOf('day');
+            const WORK_START_HOUR = 9;
+            const WORK_END_HOUR = 18;
+            
+            if (date) {
+                let selectedDate;
+                
+                if (date instanceof Date) {
+                    selectedDate = this.$moment(date);
+                } else if (typeof date === 'string') {
+                    selectedDate = this.$moment(date, ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'DD.MM.YYYY HH:mm'], true);
+                } else {
+                    selectedDate = this.$moment(date);
+                }
+                
+                if (!selectedDate.isValid()) {
+                    return {};
+                }
+                
+                const isToday = selectedDate.isSame(today, 'day');
+                
+                const minBookingTime = now.clone().add(1, 'hour');
+                const minBookingHour = minBookingTime.hour();
+                const minBookingMinute = minBookingTime.minute();
+                
+                return {
+                    disabledHours: () => {
+                        const hours = [];
+                        
+                        for (let i = 0; i < WORK_START_HOUR; i++) {
+                            hours.push(i);
+                        }
+                        
+                        for (let i = WORK_END_HOUR + 1; i < 24; i++) {
+                            hours.push(i);
+                        }
+                        
+                        if (isToday) {
+                            for (let i = WORK_START_HOUR; i < minBookingHour; i++) {
+                                if (!hours.includes(i)) {
+                                    hours.push(i);
+                                }
+                            }
+                        }
+                        
+                        return hours;
+                    },
+                    disabledMinutes: (selectedHour) => {
+                        const minutes = [];
+                        
+                        if (isToday && selectedHour === minBookingHour) {
+                            for (let i = 0; i <= minBookingMinute; i++) {
+                                minutes.push(i);
+                            }
+                        }
+                        
+                        return minutes;
+                    },
+                };
+            }
+            
+            return {
+                disabledHours: () => {
+                    const hours = [];
+                    for (let i = 0; i < WORK_START_HOUR; i++) {
+                        hours.push(i);
+                    }
+                    for (let i = WORK_END_HOUR + 1; i < 24; i++) {
+                        hours.push(i);
+                    }
+                    return hours;
+                },
+                disabledMinutes: () => {
+                    return [];
+                },
+            };
         },
         handleClose() {
             this.resetForm();
@@ -271,14 +375,20 @@ export default {
                     client_id: this.user.client_id,
                 };
 
-                this.$store.dispatch('bookings/createBooking', payload)
+                if (this.editingBookingId) {
+                    payload.booking_id = this.editingBookingId;
+                }
+
+                const method = this.editingBookingId ? 'updateBooking' : 'createBooking';
+
+                this.$store.dispatch('bookings/' + method, payload)
                     .then(() => {
-                        ElMessage.success('Запис успішно створений');
+                        ElMessage.success(this.editingBookingId ? 'Запис успішно оновлений' : 'Запис успішно створений');
                         this.handleClose();
                     })
                     .catch((error) => {
                         console.log(error);
-                        ElMessage.error(error.response?.data?.message || 'Помилка при створенні запису');
+                        ElMessage.error(error.response?.data?.message || (this.editingBookingId ? 'Помилка при оновленні запису' : 'Помилка при створенні запису'));
                     })
                     .finally(() => {
                         this.loading = false;
@@ -316,6 +426,33 @@ export default {
                 maximumFractionDigits: 2
             }).format(price);
         },
+        async loadClientBookings() {
+            if (!this.user?.client_id || this.loadingBookings) {
+                return;
+            }
+
+            this.loadingBookings = true;
+            try {
+                const bookings = await this.$store.dispatch('bookings/fetchUserBookings', { clientId: this.user.client_id, force: true });
+                
+                this.unavailableDates.clear();
+                
+                bookings.forEach(booking => {
+                    if (this.editingBookingId && booking.id === this.editingBookingId) {
+                        return;
+                    }
+                    
+                    if (booking.date) {
+                        const dateKey = this.$moment(booking.date, 'DD.MM.YYYY HH:mm').format('YYYY-MM-DD');
+                        this.unavailableDates.add(dateKey);
+                    }
+                });
+            } catch (error) {
+                console.error('Помилка при завантаженні бронювань:', error);
+            } finally {
+                this.loadingBookings = false;
+            }
+        },
         resetForm() {
             this.loading = false;
             this.priceCollapseOpen = false;
@@ -324,6 +461,8 @@ export default {
                 total_price: 0,
             };
             this.formData = { car: null, services: [], date: null, comment: null };
+            this.unavailableDates.clear();
+            this.loadingBookings = false;
             this.$refs.createBookingFormRef?.resetFields();
         }
     },
