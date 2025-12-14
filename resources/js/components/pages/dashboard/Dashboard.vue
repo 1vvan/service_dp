@@ -13,7 +13,7 @@
                             <el-icon :size="32"><Calendar /></el-icon>
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ stats.total_bookings }}</div>
+                            <div class="stat-value">{{ isUserClient ? stats.total_bookings : managerStats.total_bookings }}</div>
                             <div class="stat-label">Записів</div>
                         </div>
                     </div>
@@ -22,11 +22,11 @@
                 <el-card class="stat-card" v-loading="isLoading">
                     <div class="stat-content">
                         <div class="stat-icon clients">
-                            <el-icon :size="32"><Van /></el-icon>
+                            <CarIcon :size="32" />
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ stats.total_cars }}</div>
-                            <div class="stat-label">Мої авто</div>
+                            <div class="stat-value">{{ isUserClient ? stats.total_cars : managerStats.total_cars }}</div>
+                            <div class="stat-label">{{ isUserClient ? 'Мої авто' : 'Авто' }}</div>
                         </div>
                     </div>
                 </el-card>
@@ -34,11 +34,14 @@
                 <el-card class="stat-card" v-loading="isLoading">
                     <div class="stat-content">
                         <div class="stat-icon revenue">
-                            <el-icon :size="32"><Wallet /></el-icon>
+                            <el-icon :size="32">
+                                <Wallet v-if="isUserClient" />
+                                <User v-else />
+                            </el-icon>
                         </div>
                         <div class="stat-info">
-                            <div class="stat-value">{{ formatCurrency(stats.total_spent) }} грн</div>
-                            <div class="stat-label">Витрачено</div>
+                            <div class="stat-value">{{ isUserClient ? formatCurrency(stats.total_spent) + ' грн' : managerStats.total_clients }}</div>
+                            <div class="stat-label">{{ isUserClient ? 'Витрачено' : 'Клієнти' }}</div>
                         </div>
                     </div>
                 </el-card>
@@ -52,14 +55,14 @@
                         </div>
                     </template>
                     <div class="dashboard-card__list">
-                        <div v-if="userBookings.length === 0" class="empty-state">
+                        <div v-if="bookings.length === 0" class="empty-state">
                             <el-empty description="Немає записів" />
                         </div>
                         <div v-else
-                            v-for="booking in userBookings.slice(0, 3)"
+                            v-for="booking in bookings.slice(0, 3)"
                             :key="booking.id"
                             class="dashboard-card__item"
-                        >
+                            >
                             <div class="dashboard-card_item-info">
                                 <div class="text">
                                     <div class="title">{{ booking.services.map(service => service.name).join(', ') }}</div>
@@ -79,11 +82,11 @@
                         </div>
                     </template>
                     <div class="dashboard-card__list">
-                        <div v-if="userCars.length === 0" class="empty-state">
+                        <div v-if="cars.length === 0" class="empty-state">
                             <el-empty description="Немає авто" />
                         </div>
                         <div v-else
-                            v-for="car in userCars"
+                            v-for="car in cars"
                             :key="car.id"
                             class="dashboard-card__item"
                         >
@@ -117,9 +120,12 @@ import {
     Calendar,
     Van,
     Setting,
-    Wallet
+    Wallet,
+    User
 } from '@element-plus/icons-vue';
+import CarIcon from '../../ui/CarIcon.vue';
 import { formatPrice, moment } from '../../../lib/utils';
+import { USER_ROLES } from '../../../constants/types';
 
 export default {
     name: 'Dashboard',
@@ -128,7 +134,9 @@ export default {
         Calendar,
         Van,
         Setting,
-        Wallet
+        Wallet,
+        User,
+        CarIcon
     },
     data() {
         return {
@@ -147,14 +155,40 @@ export default {
                 bookingStatuses: this.$store.getters['references/bookingStatuses'],
             };
         },
+        user() {
+            return this.$store.state.user;
+        },
         userCars() {
             return this.$store.state.cars.userCars;
         },
         userBookings() {
             return this.$store.state.bookings.userBookings;
         },
+        upcomingBookings() {
+            return this.$store.state.bookings.upcomingBookings;
+        },
+        cars() {
+            if (this.isUserClient) {
+                return this.userCars;
+            } else {
+                return []
+            }
+        },
+        bookings() {
+            if (this.isUserClient) {
+                return this.userBookings;
+            } else {
+                return this.upcomingBookings;
+            }
+        },
         stats() {
             return this.$store.state.dash.stats;
+        },
+        managerStats() {
+            return this.$store.state.dash.managerStats;
+        },
+        isUserClient() {
+            return this.user.role_id === USER_ROLES.CLIENT;
         },
         BOOKING_STATUS_CLASS_MAPPING() {
             return bookingStatusClassMapping;
@@ -180,13 +214,22 @@ export default {
             }
         },
         fetchUserData() {
-            Promise.all([
-                this.$store.dispatch('cars/fetchUserCars', this.$store.state.user.client_id),
-                this.$store.dispatch('bookings/fetchUserBookings', { clientId: this.$store.state.user.client_id }),
-                this.$store.dispatch('dash/fetchStats', this.$store.state.user.client_id)
-            ]).then(() => {
-                this.isLoading = false;
-            });
+            if (this.isUserClient) {
+                Promise.all([
+                    this.$store.dispatch('cars/fetchUserCars', this.$store.state.user.client_id),
+                        this.$store.dispatch('bookings/fetchUserBookings', { clientId: this.$store.state.user.client_id }),
+                        this.$store.dispatch('dash/fetchStats', this.$store.state.user.client_id)
+                    ]).then(() => {
+                        this.isLoading = false;
+                    });
+            } else {
+                Promise.all([
+                    this.$store.dispatch('bookings/fetchUpcomingBookings', {}),
+                    this.$store.dispatch('dash/fetchManagerStats')
+                ]).then(() => {
+                    this.isLoading = false;
+                });
+            }
         }
     },
     mounted() {

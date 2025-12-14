@@ -23,7 +23,20 @@ class DashboardController extends Controller
         $stats = [
             'total_bookings' => $client->bookings->count(),
             'total_cars' => $client->cars->count(),
-            'total_spent' => 0,
+            'total_spent' => $client->bookings()->sum('total_price') ?? 0,
+        ];
+
+        return response()->json([
+            'stats' => $stats,
+        ]);
+    }
+
+    public function getManagerStats(): JsonResponse
+    {
+        $stats = [
+            'total_bookings' => Booking::where('date', '>=', now())->count(),
+            'total_cars' => ClientCar::count(),
+            'total_clients' => Client::count(),
         ];
 
         return response()->json([

@@ -12,7 +12,7 @@
             <div class="create-form-modal-header">
                 <h2 class="create-form-modal-title">
                     <div class="icon">
-                        <el-icon><Van /></el-icon>
+                        <CarIcon :size="32" />
                     </div>
                     Додати автомобіль
                 </h2>
@@ -118,13 +118,13 @@
 
 <script>
 import { ElMessage } from 'element-plus';
-import { Van } from '@element-plus/icons-vue';
 import { formatLicencePlate } from '../../lib/utils';
+import CarIcon from '../ui/CarIcon.vue';
 
 export default {
     name: 'CreateCarModal',
     components: {
-        Van
+        CarIcon
     },
     props: {
         isOpen: {

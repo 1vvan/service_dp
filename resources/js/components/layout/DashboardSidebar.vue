@@ -106,10 +106,13 @@ export default {
     computed: {
         pages() {
             if (this.$store.state.isAdmin) {
+                console.log('admin');
                 return this.adminPages;
             } else if (this.$store.state.isManager) {
+                console.log('manager');
                 return this.managerPages;
             } else {
+                console.log('client');
                 return this.clientPages;
             }
         },

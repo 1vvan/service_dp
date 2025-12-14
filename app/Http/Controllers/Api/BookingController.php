@@ -25,6 +25,24 @@ class BookingController extends Controller
         return Booking::all();
     }
 
+    public function getUpcomingBookings()
+    {
+        $date = request()->input('date') ?? now();
+        $clientId = request()->input('client_id') ?? null;
+
+        $bookings = Booking::query()
+            ->when($clientId, function ($query) use ($clientId) {
+                $query->where('client_id', $clientId);
+            })
+            ->where('date', '>=', $date)
+            ->with('car', 'services', 'status')
+            ->limit(10)
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return response()->json($bookings->load('car', 'services', 'status'));
+    }
+
     public function getUserBookings(Client $client)
     {
         if (!$client) {

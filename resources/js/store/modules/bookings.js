@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const state = {
     userBookings: [],
+    upcomingBookings: [],
     loading: false,
     error: null
 };
@@ -9,10 +10,27 @@ const state = {
 const mutations = {
     setUserBookings(state, bookings) {
         state.userBookings = bookings;
+    },
+    setUpcomingBookings(state, bookings) {
+        state.upcomingBookings = bookings;
     }
 };
 
 const actions = {
+    fetchUpcomingBookings({ commit }, { payload, force = false }) {
+        if (!force && state.upcomingBookings.length > 0) {
+            return Promise.resolve(state.upcomingBookings);
+        }
+
+        return axios.get(`/api/bookings/upcoming`, { params: payload })
+            .then(response => {
+                commit('setUpcomingBookings', response.data);
+                return response.data;
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    },
     fetchUserBookings({ commit }, { clientId, force = false }) {
         if (!force && state.userBookings.length > 0) {
             return Promise.resolve(state.userBookings);

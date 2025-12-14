@@ -35,6 +35,7 @@ Route::prefix('clients')->group(function () {
 
 Route::prefix('bookings')->group(function () {
     Route::get('/', [BookingController::class, 'index']);
+    Route::get('/upcoming', [BookingController::class, 'getUpcomingBookings']);
     Route::get('/{booking}', [BookingController::class, 'getBooking']);
 
     Route::middleware('auth:sanctum')->group(function () {
@@ -55,4 +56,5 @@ Route::prefix('cars')->group(function () {
 
 Route::prefix('dashboard')->group(function () {
     Route::get('/stats/{clientId}', [DashboardController::class, 'getStats']);
+    Route::get('/manager-stats', [DashboardController::class, 'getManagerStats']);
 });
