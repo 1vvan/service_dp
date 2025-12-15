@@ -20,7 +20,28 @@ class CarsController extends Controller
 
     public function index()
     {
-        return ClientCar::with('carModel.brand')->get();
+        $clientId = request()->input('client_id') ?? null;
+
+        $cars = ClientCar::query()
+            ->when($clientId, function ($query) use ($clientId) {
+                $query->where('client_id', $clientId);
+            })
+            ->with('carModel.brand', 'latestBooking', 'fuelType', 'engineType', 'gearboxType', 'driveUnitType')
+            ->get();
+
+        return response()->json($cars);
+    }
+
+    public function getCar($carId)
+    {
+        $car = ClientCar::find($carId);
+        if (!$car) {
+            return response()->json(['message' => 'Car not found'], 404);
+        }
+
+        $car->load('carModel.brand', 'latestBooking', 'fuelType', 'engineType', 'gearboxType', 'driveUnitType');
+
+        return response()->json($car);
     }
 
     public function getUserCars($clientId)
@@ -40,5 +61,10 @@ class CarsController extends Controller
     public function createCar(Client $client, CreateCarRequest $request)
     {
         return response()->json($this->carRepository->createCar($client->id, $request->all()));
+    }
+
+    public function updateCar(ClientCar $car, CreateCarRequest $request)
+    {
+        return response()->json($this->carRepository->updateCar($car->id, $request->all()));
     }
 }

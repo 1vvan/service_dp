@@ -216,7 +216,7 @@ export default {
         fetchUserData() {
             if (this.isUserClient) {
                 Promise.all([
-                    this.$store.dispatch('cars/fetchUserCars', this.$store.state.user.client_id),
+                    this.$store.dispatch('cars/fetchUserCars', { clientId: this.$store.state.user.client_id }),
                         this.$store.dispatch('bookings/fetchUserBookings', { clientId: this.$store.state.user.client_id }),
                         this.$store.dispatch('dash/fetchStats', this.$store.state.user.client_id)
                     ]).then(() => {

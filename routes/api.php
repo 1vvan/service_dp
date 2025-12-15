@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\CarsController;
+use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ReferenceController;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +31,9 @@ Route::prefix('references')->group(function () {
 });
 
 Route::prefix('clients')->group(function () {
+    Route::get('/', [ClientController::class, 'index']);
     Route::get('/{client}/bookings', [BookingController::class, 'getUserBookings']);
+    Route::get('/{client}/cars', [CarsController::class, 'getUserCars']);
 });
 
 Route::prefix('bookings')->group(function () {
@@ -47,10 +50,12 @@ Route::prefix('bookings')->group(function () {
 });
 
 Route::prefix('cars')->group(function () {
-    Route::get('/{clientId}', [CarsController::class, 'getUserCars']);
+    Route::get('/', [CarsController::class, 'index']);
+    Route::get('/{car}', [CarsController::class, 'getCar']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{client}/create', [CarsController::class, 'createCar']);
+        Route::post('/{car}/update', [CarsController::class, 'updateCar']);
     });
 });
 

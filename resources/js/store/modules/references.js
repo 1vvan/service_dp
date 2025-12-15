@@ -9,6 +9,7 @@ const state = {
     driveUnitTypes: [],
     bookingStatuses: [],
     services: [],
+    clients: [],
     loading: false,
     error: null
 };
@@ -37,6 +38,9 @@ const mutations = {
     },
     SET_SERVICES(state, services) {
         state.services = services;
+    },
+    SET_CLIENTS(state, clients) {
+        state.clients = clients;
     },
     SET_LOADING(state, loading) {
         state.loading = loading;
@@ -154,8 +158,21 @@ const actions = {
         }
     },
 
-    async fetchAllReferences({ dispatch }) {
-        await Promise.all([
+    async fetchClients({ commit }) {
+        try {
+            commit('SET_LOADING', true);
+            const response = await axios.get('/api/clients');
+            commit('SET_CLIENTS', response.data);
+            commit('SET_ERROR', null);
+        } catch (error) {
+            commit('SET_ERROR', error.response?.data?.message || 'Помилка завантаження клієнтів');
+        } finally {
+            commit('SET_LOADING', false);
+        }
+    },
+
+    async fetchAllReferences({ dispatch, rootState }) {
+        const promises = [
             dispatch('fetchCarBrands'),
             dispatch('fetchCarModels'),
             dispatch('fetchFuelTypes'),
@@ -164,7 +181,13 @@ const actions = {
             dispatch('fetchDriveUnitTypes'),
             dispatch('fetchBookingStatuses'),
             dispatch('fetchServices')
-        ]);
+        ];
+
+        if (!rootState.isClient) {
+            promises.push(dispatch('fetchClients'));
+        }
+
+        await Promise.all(promises);
     }
 };
 

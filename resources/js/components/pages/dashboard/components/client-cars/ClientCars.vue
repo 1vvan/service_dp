@@ -2,28 +2,28 @@
     <DashboardLayout>
         <div class="cars-container">
             <div class="top">
-                <h1 class="title">Ви маєте <span class="count">{{ cars.length }}</span> {{ carsWord }}</h1>
+                <h1 class="title">Всього зареєстровано <span class="count">{{ cars.length }}</span> {{ carsWord }}</h1>
 
                 <button class="create-car-btn" @click="openCreateCarModal">
                     <el-icon><Plus /></el-icon>
                     <span class="text">Додати автомобіль</span>
                 </button>
             </div>
-            <CarsTable :cars="cars" :loading="loading" @edit-car="editCar" />
+            <CarsTable :cars="cars" :loading="loading" @edit-car="editCar"/>
         </div>
 
-        <CreateCarModal :isOpen="isCreateCarModalOpen" @close="closeCreateCarModal" :editingCarId="editingCarId" />
+        <CreateCarModal :isOpen="isCreateCarModalOpen" @close="closeCreateCarModal" managerMode :editingCarId="editingCarId" />
     </DashboardLayout>
 </template>
 
 <script>
 import DashboardLayout from '../../../../../layouts/DashboardLayout.vue';
+import { pluralize } from '../../../../../lib/utils';
 import CreateCarModal from '../../../../modals/CreateCarModal.vue';
-import CarsTable from './CarsTable.vue';
-import { pluralize } from '../../../../../lib/utils.js';
+import CarsTable from '../cars/CarsTable.vue';
 
 export default {
-    name: 'Cars',
+    name: 'ClientCars',
     components: {
         DashboardLayout,
         CarsTable,
@@ -41,7 +41,7 @@ export default {
             return this.$store.state.user;
         },
         cars() {
-            return this.$store.state.cars.userCars || [];
+            return this.$store.state.cars.clientCars || [];
         },
         carsWord() {
             return pluralize(
@@ -58,7 +58,7 @@ export default {
     methods: {
         getCars() {
             this.loading = true;
-            this.$store.dispatch('cars/fetchUserCars', { clientId: this.user.client_id })
+            this.$store.dispatch('cars/fetchClientCars', { payload: {} })
                 .then(() => {
                     this.loading = false;
                 })

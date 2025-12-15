@@ -20,12 +20,36 @@
         </el-table-column>
         <el-table-column prop="vin" label="VIN" width="100" />
         <el-table-column prop="car_year" label="Рік" width="100" />
+        <el-table-column label="Дії" width="100" align="center">
+            <template #default="scope">
+                <el-dropdown placement="bottom">
+                    <el-button> <el-icon><Grid /></el-icon>  </el-button>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item>
+                                <div @click="editCar(scope.row.id)" style="display: flex; align-items: center; gap: 8px;">
+                                    <el-icon><Edit /></el-icon>
+                                    <span>Редагувати</span>
+                                </div>
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+            </template>
+        </el-table-column>
     </el-table>
 </template>
 
 <script>
+import { Grid, Tickets, Edit } from '@element-plus/icons-vue';
+
 export default {
     name: 'CarsTable',
+    components: {
+        Grid,
+        Tickets,
+        Edit
+    },
     props: {
         cars: {
             type: Array,
@@ -40,5 +64,10 @@ export default {
         return {
         }
     },
+    methods: {
+        editCar(carId) {
+            this.$emit('edit-car', carId);
+        }
+    }
 }
 </script>

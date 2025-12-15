@@ -68,6 +68,16 @@ const routes = [
         }
     },
     {
+        path: '/dashboard/client-cars',
+        name: 'ClientCars',
+        component: () => import('../components/pages/dashboard/components/client-cars/ClientCars.vue'),
+        meta: {
+            title: 'Автомобілі',
+            subtitle: 'Керування автомобілями',
+            requiresAuth: true
+        }
+    },
+    {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
         component: () => import('../components/pages/NotFound.vue')

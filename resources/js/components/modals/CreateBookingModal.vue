@@ -198,7 +198,7 @@ export default {
         },
     },
     mounted() {
-        this.$store.dispatch('cars/fetchUserCars', this.user.client_id);
+        this.$store.dispatch('cars/fetchUserCars', { clientId: this.user.client_id });
     },
     watch: {
         isOpen(newVal) {

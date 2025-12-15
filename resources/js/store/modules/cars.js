@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const state = {
     userCars: [],
+    clientCars: [],
     loading: false,
     error: null
 };
@@ -9,18 +10,43 @@ const state = {
 const mutations = {
     setUserCars(state, cars) {
         state.userCars = cars;
+    },
+    setClientCars(state, cars) {
+        state.clientCars = cars;
     }
 };
 
 const actions = {
-    fetchUserCars({ commit }, clientId, force = false) {
+    fetchUserCars({ commit }, { clientId, force = false }) {
         if (!force && state.userCars.length > 0) {
             return Promise.resolve(state.userCars);
         }
 
-        return axios.get(`/api/cars/${clientId}`)
+        return axios.get(`/api/clients/${clientId}/cars`)
             .then(response => {
                 commit('setUserCars', response.data);
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    },
+    fetchClientCars({ commit }, { payload = {}, force = false }) {
+        if (!force && state.clientCars.length > 0) {
+            return Promise.resolve(state.clientCars);
+        }
+
+        return axios.get(`/api/cars`, { params: payload })
+            .then(response => {
+                commit('setClientCars', response.data);
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    },
+    getCar({ }, carId) {
+        return axios.get(`/api/cars/${carId}`)
+            .then(response => {
+                return response.data;
             })
             .catch(error => {
                 return Promise.reject(error);
@@ -29,7 +55,25 @@ const actions = {
     createCar({ dispatch }, payload) {
         return axios.post(`/api/cars/${payload.client_id}/create`, payload.data)
             .then(response => {
-                dispatch('fetchUserCars', payload.client_id, true);
+                if (payload.managerMode) {
+                    dispatch('fetchClientCars', { payload: {}, force: true });
+                } else {
+                    dispatch('fetchUserCars', { clientId: payload.client_id, force: true });
+                }
+                return response;
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    },
+    updateCar({ dispatch }, payload) {
+        return axios.post(`/api/cars/${payload.car_id}/update`, payload.data)
+            .then(response => {
+                if (payload.managerMode) {
+                    dispatch('fetchClientCars', { payload: {}, force: true });
+                } else {
+                    dispatch('fetchUserCars', { clientId: payload.client_id, force: true });
+                }
                 return response;
             })
             .catch(error => {

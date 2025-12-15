@@ -20,7 +20,8 @@
             router
         >
             <el-menu-item v-for="page in pages" :key="page.path" :index="page.path">
-                <el-icon><component :is="page.icon" /></el-icon>
+                <el-icon v-if="page.icon !== 'CarIcon'"><component :is="page.icon" /></el-icon>
+                <CarIcon v-else :size="24" />
                 <template #title>{{ page.name }}</template>
             </el-menu-item>
         </el-menu>
@@ -40,12 +41,12 @@ import {
     Calendar,
     User,
     Setting,
-    Van,
     Document,
     Expand,
     Fold,
     ArrowLeftBold
 } from '@element-plus/icons-vue';
+import CarIcon from '../ui/CarIcon.vue';
 
 export default {
     name: 'DashboardSidebar',
@@ -60,7 +61,7 @@ export default {
         Calendar,
         User,
         Setting,
-        Van,
+        CarIcon,
         Document,
         Expand,
         Fold,
@@ -81,7 +82,7 @@ export default {
                 },
                 {
                     name: 'Автомобілі',
-                    icon: 'Van',
+                    icon: 'CarIcon',
                     path: '/dashboard/cars'
                 },
             ],
@@ -91,7 +92,11 @@ export default {
                     icon: 'HomeFilled',
                     path: '/dashboard'
                 },
-                
+                {
+                    name: 'Автомобілі',
+                    icon: 'CarIcon',
+                    path: '/dashboard/client-cars'
+                },
             ],
             adminPages: [
                 {
@@ -106,13 +111,10 @@ export default {
     computed: {
         pages() {
             if (this.$store.state.isAdmin) {
-                console.log('admin');
                 return this.adminPages;
             } else if (this.$store.state.isManager) {
-                console.log('manager');
                 return this.managerPages;
             } else {
-                console.log('client');
                 return this.clientPages;
             }
         },

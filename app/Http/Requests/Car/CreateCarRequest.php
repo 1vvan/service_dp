@@ -20,6 +20,10 @@ class CreateCarRequest extends FormRequest
             'year' => ['required', 'integer'],
             'mileage' => ['required', 'integer'],
             'brand_id' => ['required', 'integer'],
+            'engine_type' => ['nullable', 'integer'],
+            'gearbox_type' => ['nullable', 'integer'],
+            'drive_unit_type' => ['nullable', 'integer'],
+            'fuel_type' => ['nullable', 'integer'],
         ];
     }
 }

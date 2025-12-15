@@ -7,4 +7,6 @@ use App\Models\ClientCar;
 interface CarRepositoryInterface
 {
     public function createCar(int $clientId, array $data): ClientCar;
+    
+    public function updateCar(int $carId, array $data): ClientCar;
 }
