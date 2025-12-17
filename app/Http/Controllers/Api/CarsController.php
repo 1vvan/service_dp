@@ -67,4 +67,9 @@ class CarsController extends Controller
     {
         return response()->json($this->carRepository->updateCar($car->id, $request->all()));
     }
+
+    public function confirmCar(ClientCar $car)
+    {
+        return response()->json($this->carRepository->confirmCar($car->id));
+    }
 }

@@ -191,7 +191,8 @@ export default {
             return this.$store.state.user;
         },
         cars() {
-            return this.$store.state.cars.userCars || [];
+            const userCars = this.$store.state.cars.userCars || [];
+            return userCars.filter(car => car.checked_by !== null);
         },
         services() {
             return this.$store.state.references.services || [];

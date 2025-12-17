@@ -22,6 +22,7 @@ class ClientCar extends Model
         'mileage',
         'vin',
         'license_plate',
+        'checked_by',
     ];
 
     protected $appends = ['full_name', 'brand_logo'];
@@ -57,6 +58,11 @@ class ClientCar extends Model
         $modelName = $this->carModel->name;
 
         return trim($brandName . ' ' . $modelName);
+    }
+
+    public function checkedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'checked_by');
     }
 
     public function client(): BelongsTo

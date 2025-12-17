@@ -9,4 +9,6 @@ interface CarRepositoryInterface
     public function createCar(int $clientId, array $data): ClientCar;
     
     public function updateCar(int $carId, array $data): ClientCar;
+
+    public function confirmCar(int $carId): ClientCar;
 }

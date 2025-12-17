@@ -75,7 +75,7 @@
                         </div>
                     </div>
                 </el-card>
-                <el-card class="dashboard-card" v-loading="isLoading">
+                <el-card class="dashboard-card" v-loading="isLoading" v-if="!isManagerOrAdmin">
                     <template #header>
                         <div class="card-header">
                             <span>Мої автомобілі</span>
@@ -157,6 +157,9 @@ export default {
         },
         user() {
             return this.$store.state.user;
+        },
+        isManagerOrAdmin() {
+            return this.$store.state.isManagerOrAdmin;
         },
         userCars() {
             return this.$store.state.cars.userCars;

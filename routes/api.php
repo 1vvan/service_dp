@@ -52,9 +52,10 @@ Route::prefix('bookings')->group(function () {
 Route::prefix('cars')->group(function () {
     Route::get('/', [CarsController::class, 'index']);
     Route::get('/{car}', [CarsController::class, 'getCar']);
-
+    
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{client}/create', [CarsController::class, 'createCar']);
+        Route::post('/{car}/confirm', [CarsController::class, 'confirmCar']);
         Route::post('/{car}/update', [CarsController::class, 'updateCar']);
     });
 });

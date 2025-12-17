@@ -161,3 +161,22 @@ h1, h2, h3, h4, h5, h6 {
 .mb-2 { margin-bottom: $spacing-md; }
 .mb-3 { margin-bottom: $spacing-lg; }
 .mb-4 { margin-bottom: $spacing-xl; }
+
+
+.indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+
+    &.green {
+        background-color: $green-500;
+    }
+
+    &.red {
+        background-color: $red-500;
+    }
+
+    &.yellow {
+        background-color: $yellow-500;
+    }
+}

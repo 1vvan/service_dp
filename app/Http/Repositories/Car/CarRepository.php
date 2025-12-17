@@ -3,6 +3,7 @@
 namespace App\Http\Repositories\Car;
 
 use App\Models\ClientCar;
+use Illuminate\Support\Facades\Auth;
 
 class CarRepository implements CarRepositoryInterface
 {
@@ -44,6 +45,15 @@ class CarRepository implements CarRepositoryInterface
 
         $car->load('carModel.brand');
 
+        return $car;
+    }
+
+    public function confirmCar(int $carId): ClientCar
+    {
+        $car = ClientCar::find($carId);
+        $user = Auth::user();
+
+        $car->update(['checked_by' => $user->id]);
         return $car;
     }
 }

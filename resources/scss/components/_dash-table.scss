@@ -99,6 +99,15 @@
         }
     }
 
+    & .actions-column {
+        & .cell {
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            gap: 8px;
+        }
+    }
+
     & .el-table__row {
         background-color: $gray-700 !important;
         & .cell {

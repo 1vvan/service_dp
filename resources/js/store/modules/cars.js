@@ -79,6 +79,16 @@ const actions = {
             .catch(error => {
                 return Promise.reject(error);
             });
+    },
+    confirmCar({ dispatch }, carId) {
+        return axios.post(`/api/cars/${carId}/confirm`)
+            .then(response => {
+                dispatch('fetchClientCars', { payload: {}, force: true });
+                return response;
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
     }
 };
 

@@ -18,6 +18,7 @@ export default createStore({
         isAdmin: false,
         isManager: false,
         isClient: false,
+        isManagerOrAdmin: false,
     },
     mutations: {
         setUser(state, user) {
@@ -25,6 +26,7 @@ export default createStore({
             state.isAdmin = user.role_id === USER_ROLES.ADMIN;
             state.isManager = user.role_id === USER_ROLES.MANAGER;
             state.isClient = user.role_id === USER_ROLES.CLIENT;
+            state.isManagerOrAdmin = user.role_id === USER_ROLES.MANAGER || user.role_id === USER_ROLES.ADMIN;
         },
         setToken(state, token) {
             state.token = token;
