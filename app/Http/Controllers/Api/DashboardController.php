@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingStatus;
 use App\Models\Client;
 use App\Models\ClientCar;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +24,7 @@ class DashboardController extends Controller
         $stats = [
             'total_bookings' => $client->bookings->count(),
             'total_cars' => $client->cars->count(),
-            'total_spent' => $client->bookings()->sum('total_price') ?? 0,
+            'total_spent' => $client->bookings()->where('status_id', BookingStatus::getPaidStatusId())->sum('total_price') ?? 0,
         ];
 
         return response()->json([

@@ -6,4 +6,6 @@ export const BOOKING_STATUS_CLASS_MAPPING = {
     [BOOKING_STATUS.IN_PROGRESS]: 'in-progress',
     [BOOKING_STATUS.COMPLETED]: 'completed',
     [BOOKING_STATUS.CANCELLED]: 'cancelled',
+    [BOOKING_STATUS.PENDING_PAYMENT]: 'pending-payment',
+    [BOOKING_STATUS.PAID]: 'paid',
 };

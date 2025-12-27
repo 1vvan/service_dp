@@ -3,6 +3,7 @@ import axios from 'axios';
 const state = {
     userBookings: [],
     upcomingBookings: [],
+    clientBookings: [],
     loading: false,
     error: null
 };
@@ -13,7 +14,10 @@ const mutations = {
     },
     setUpcomingBookings(state, bookings) {
         state.upcomingBookings = bookings;
-    }
+    },
+    setClientBookings(state, bookings) {
+        state.clientBookings = bookings;
+    },
 };
 
 const actions = {
@@ -39,6 +43,21 @@ const actions = {
         return axios.get(`/api/clients/${clientId}/bookings`)
             .then(response => {
                 commit('setUserBookings', response.data);
+                return response.data;
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    },
+
+    fetchClientBookings({ commit }, { force = false }) {
+        if (!force && state.clientBookings.length > 0) {
+            return Promise.resolve(state.clientBookings);
+        }
+
+        return axios.get(`/api/bookings`)
+            .then(response => {
+                commit('setClientBookings', response.data);
                 return response.data;
             })
             .catch(error => {
@@ -98,7 +117,28 @@ const actions = {
             .catch(error => {
                 return Promise.reject(error);
             });
-    }
+    },
+
+    createPaymentSession({}, bookingId) {
+        return axios.post(`/api/bookings/${bookingId}/payment/create-session`)
+            .then(response => {
+                return response;
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    },
+
+    confirmBooking({ dispatch }, bookingId) {
+        return axios.post(`/api/bookings/${bookingId}/confirm`)
+            .then(async response => {
+                await dispatch('fetchClientBookings', { force: true });
+                return response;
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
+    },
 };
 
 export default {

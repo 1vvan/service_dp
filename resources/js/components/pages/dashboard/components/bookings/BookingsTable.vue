@@ -37,8 +37,10 @@
                     <el-button> <el-icon><Grid /></el-icon>  </el-button>
                     <template #dropdown>
                         <el-dropdown-menu>
+                            <el-dropdown-item @click="payBooking(scope.row.id)" v-if="!isBookingPaid(scope.row)"><el-icon><Money /></el-icon> Сплатити онлайн</el-dropdown-item>
                             <el-dropdown-item @click="downloadReceipt(scope.row.id)"><el-icon><Tickets /></el-icon> Скачати чек</el-dropdown-item>
                             <el-dropdown-item @click="editBooking(scope.row.id)"><el-icon><Edit /></el-icon> Редагувати</el-dropdown-item>
+                            <el-dropdown-item @click="confirmBooking(scope.row.id)" v-if="isManagerOrAdmin && isBookingNew(scope.row)"><el-icon><Check /></el-icon> Підтвердити</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -50,15 +52,18 @@
 <script>
 import { formatPrice } from '../../../../../lib/utils';
 import { BOOKING_STATUS_CLASS_MAPPING as bookingStatusClassMapping } from '../../../../../constants/mapping';
-import { Grid, Tickets, Edit } from '@element-plus/icons-vue';
+import { Grid, Tickets, Edit, Money, Check } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
+import { PAYMENT_STATUS, USER_ROLES, BOOKING_STATUS } from '../../../../../constants/types';
 
 export default {
     name: 'BookingsTable',
     components: {
         Tickets,
         Grid,
-        Edit
+        Edit,
+        Money,
+        Check
     },
     props: {
         bookings: {
@@ -74,6 +79,9 @@ export default {
         BOOKING_STATUS_CLASS_MAPPING() {
             return bookingStatusClassMapping;
         },
+        isManagerOrAdmin() {
+            return this.$store.state.user.role_id === USER_ROLES.MANAGER || this.$store.state.user.role_id === USER_ROLES.ADMIN;
+        }
     },
     methods: {
         formatPrice(price) {
@@ -98,6 +106,37 @@ export default {
         },
         editBooking(bookingId) {
             this.$emit('edit-booking', bookingId);
+        },
+        async payBooking(bookingId) {
+            try {
+                const response = await this.$store.dispatch('bookings/createPaymentSession', bookingId);
+                if (response.data && response.data.url) {
+                    window.location.href = response.data.url;
+                }
+            } catch (error) {
+                console.error('Помилка при створенні платежу:', error);
+                ElMessage.error(error.response?.data?.message || 'Помилка при створенні платежу');
+            }
+        },
+        isBookingPaid(booking) {
+            if (booking.payment_transactions && booking.payment_transactions.length > 0) {
+                return booking.payment_transactions.some(
+                    transaction => transaction.payment_status === PAYMENT_STATUS.COMPLETED
+                );
+            }
+            return false;
+        },
+        isBookingNew(booking) {
+            return booking.status_id === BOOKING_STATUS.NEW;
+        },
+        confirmBooking(bookingId) {
+            this.$store.dispatch('bookings/confirmBooking', bookingId)
+                .then(() => {
+                    this.$message.success('Запис підтверджено');
+                })
+                .catch(() => {
+                    this.$message.error('Помилка підтвердження запису');
+                });
         }
     }
 }

@@ -18,10 +18,12 @@ class BookingStatusSeeder extends Seeder
             'В роботі',
             'Виконана',
             'Скасована',
+            'Очікується оплата',
+            'Сплачено',
         ];
 
         foreach ($statuses as $status) {
-            BookingStatus::create(['name' => $status]);
+            BookingStatus::updateOrCreate(['name' => $status], ['name' => $status]);
         }
     }
 }

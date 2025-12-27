@@ -43,4 +43,18 @@ class BookingStatus extends Model
             return self::where('name', 'Скасована')->first()->id;
         });
     }
+
+    public static function getPendingPaymentStatusId(): int
+    {
+        return Cache::rememberForever("booking_status_pending_payment_id", function () {
+            return self::where('name', 'Очікується оплата')->first()->id;
+        });
+    }
+
+    public static function getPaidStatusId(): int
+    {
+        return Cache::rememberForever("booking_status_paid_id", function () {
+            return self::where('name', 'Сплачено')->first()->id;
+        });
+    }
 }

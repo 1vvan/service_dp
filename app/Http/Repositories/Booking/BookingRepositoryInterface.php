@@ -13,4 +13,6 @@ interface BookingRepositoryInterface
     public function calculateTotalPrice(int $carId, array $serviceIds): float;
     
     public function calculatePriceDetails(int $carId, array $serviceIds): array;
+
+    public function confirmBooking(int $bookingId): Booking;
 }

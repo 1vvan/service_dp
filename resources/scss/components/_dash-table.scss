@@ -73,11 +73,13 @@
                 color: $gray-700 !important;
             }
 
+            &.paid,
             &.confirmed {
                 background-color: $green-500 !important;
                 color: $gray-700 !important;
             }
 
+            &.pending-payment,
             &.in-progress {
                 background-color: $orange-500 !important;
                 color: $gray-700 !important;

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             DriveUnitTypeSeeder::class,
             BookingStatusSeeder::class,
             ServiceSeeder::class,
+            PaymentStatusSeeder::class,
         ]);
     }
 }

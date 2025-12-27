@@ -150,4 +150,18 @@ class BookingRepository implements BookingRepositoryInterface
 
         return $booking;
     }
+
+    public function confirmBooking(int $bookingId): Booking
+    {
+        $booking = Booking::find($bookingId);
+        if (!$booking) {
+            throw new \Exception('Запис не знайдений');
+        }
+
+        $booking->update([
+            'status_id' => BookingStatus::getConfirmedStatusId(),
+        ]);
+
+        return $booking;
+    }
 }

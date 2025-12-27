@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\CarsController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReferenceController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,7 +47,13 @@ Route::prefix('bookings')->group(function () {
         Route::post('/{booking}/update', [BookingController::class, 'updateBooking']);
         Route::post('/calculate-price', [BookingController::class, 'calculatePrice']);
         Route::get('/{booking}/receipt', [BookingController::class, 'generateReceipt']);
+        Route::post('/{booking}/payment/create-session', [PaymentController::class, 'createCheckoutSession']);
+        Route::post('/{booking}/confirm', [BookingController::class, 'confirmBooking']);
     });
+});
+
+Route::prefix('payments')->group(function () {
+    Route::post('/webhook/stripe', [PaymentController::class, 'handleWebhook']);
 });
 
 Route::prefix('cars')->group(function () {

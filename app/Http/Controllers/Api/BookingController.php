@@ -22,7 +22,7 @@ class BookingController extends Controller
 
     public function index()
     {
-        return Booking::all();
+        return Booking::with('car', 'services', 'status', 'paymentTransactions')->get();
     }
 
     public function getUpcomingBookings()
@@ -35,12 +35,12 @@ class BookingController extends Controller
                 $query->where('client_id', $clientId);
             })
             ->where('date', '>=', $date)
-            ->with('car', 'services', 'status')
+            ->with('car', 'services', 'status', 'paymentTransactions')
             ->limit(10)
             ->orderBy('date', 'desc')
             ->get();
 
-        return response()->json($bookings->load('car', 'services', 'status'));
+        return response()->json($bookings->load('car', 'services', 'status', 'paymentTransactions'));
     }
 
     public function getUserBookings(Client $client)
@@ -49,14 +49,14 @@ class BookingController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $bookings = $client->bookings()->with('car', 'services', 'status')->get();
+        $bookings = $client->bookings()->with('car', 'services', 'status', 'paymentTransactions')->get();
 
         return response()->json($bookings);
     }
 
     public function getBooking(Booking $booking)
     {
-        return response()->json($booking->load('car', 'services', 'status'));
+        return response()->json($booking->load('car', 'services', 'status', 'paymentTransactions'));
     }
 
     public function updateBooking(Booking $booking, UpdateBookingRequest $request): JsonResponse
@@ -118,5 +118,10 @@ class BookingController extends Controller
         ]);
 
         return $pdf->download('receipt-booking-' . $booking->id . '.pdf');
+    }
+
+    public function confirmBooking(Booking $booking)
+    {
+        return response()->json($this->bookingRepository->confirmBooking($booking->id));
     }
 }

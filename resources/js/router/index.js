@@ -78,6 +78,16 @@ const routes = [
         }
     },
     {
+        path: '/dashboard/client-bookings',
+        name: 'ClientBookings',
+        component: () => import('../components/pages/dashboard/components/client-bookings/ClientBookings.vue'),
+        meta: {
+            title: 'Записи',
+            subtitle: 'Керування записами',
+            requiresAuth: true
+        }
+    },
+    {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
         component: () => import('../components/pages/NotFound.vue')
