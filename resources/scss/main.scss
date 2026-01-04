@@ -21,6 +21,8 @@
 @use 'pages/dashboard/dashboard';
 @use 'pages/dashboard/bookings';
 @use 'pages/dashboard/cars';
+@use 'pages/dashboard/clients';
+@use 'pages/dashboard/client-profile';
 * {
     margin: 0;
     padding: 0;

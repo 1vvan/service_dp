@@ -1,0 +1,120 @@
+@use '../../variables' as *;
+
+.client-profile-container {
+    padding: 24px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.client-profile-container .el-card__header {
+    border-bottom: 1px solid hsl(220 15% 22%) !important;
+}
+
+.profile-section {
+    background: hsl(220 18% 14%) !important;
+    border: 1px solid hsl(220 15% 22%) !important;
+    border-radius: 12px !important;
+
+    :deep(.el-card__header) {
+        border-bottom: 1px solid hsl(220 15% 22%) !important;
+        padding: 20px 24px;
+    }
+
+    :deep(.el-card__body) {
+        padding: 24px;
+    }
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: hsl(210 20% 98%);
+}
+
+.section-icon {
+    font-size: 24px;
+    color: $orange-500;
+}
+
+.client-info-form {
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            color: hsl(215 15% 55%);
+        }
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .el-button--primary {
+        background-color: $orange-500;
+        border-color: $orange-500;
+        color: $slate-900;
+        font-weight: 600;
+        transition: all 0.3s ease;
+
+        & span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        &:hover {
+            background-color: $orange-600;
+            border-color: $orange-600;
+            transition: all 0.3s ease;
+        }
+    }
+
+    .el-input__wrapper {
+        padding: 0 !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .el-input__inner {
+        background-color: hsl(220 18% 12%);
+        border: 1px solid hsl(220 15% 22%);
+        box-shadow: none;
+
+        &:hover {
+            border-color: $orange-500;
+        }
+
+        &.is-focus {    
+            border-color: $orange-500;
+        }
+    }
+}
+
+.cars-table-wrapper,
+.bookings-table-wrapper {
+    min-height: 200px;
+}
+
+.empty-state {
+    padding: 40px 0;
+    text-align: center;
+    color: hsl(215 15% 55%);
+}
+

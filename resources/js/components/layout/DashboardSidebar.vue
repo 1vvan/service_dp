@@ -93,6 +93,11 @@ export default {
                     path: '/dashboard'
                 },
                 {
+                    name: 'Клієнти',
+                    icon: 'User',
+                    path: '/dashboard/clients'
+                },
+                {
                     name: 'Записи',
                     icon: 'Calendar',
                     path: '/dashboard/client-bookings'

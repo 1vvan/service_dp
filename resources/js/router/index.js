@@ -30,10 +30,20 @@ const routes = [
     {
         path: '/dashboard/clients',
         name: 'Clients',
-        component: () => import('../components/pages/dashboard/components/Clients.vue'),
+        component: () => import('../components/pages/dashboard/components/clients/Clients.vue'),
         meta: {
             title: 'Клієнти',
             subtitle: 'Керування клієнтами',
+            requiresAuth: true,
+        }
+    },
+    {
+        path: '/dashboard/clients/:id',
+        name: 'ClientProfile',
+        component: () => import('../components/pages/dashboard/components/clients/ClientProfile.vue'),
+        meta: {
+            title: 'Профіль клієнта',
+            subtitle: 'Інформація про клієнта',
             requiresAuth: true,
         }
     },

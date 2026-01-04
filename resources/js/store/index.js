@@ -4,6 +4,7 @@ import references from './modules/references';
 import { USER_ROLES } from '../constants/types';
 import bookings from './modules/bookings';
 import cars from './modules/cars';
+import clients from './modules/clients';
 import dash from './modules/dash';
 
 const token = localStorage.getItem('token');
@@ -106,6 +107,7 @@ export default createStore({
         references,
         bookings,
         cars,
+        clients,
         dash
     }
 });

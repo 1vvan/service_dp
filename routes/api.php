@@ -32,7 +32,11 @@ Route::prefix('references')->group(function () {
 });
 
 Route::prefix('clients')->group(function () {
-    Route::get('/', [ClientController::class, 'index']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/', [ClientController::class, 'index']);
+        Route::get('/{client}', [ClientController::class, 'show']);
+        Route::put('/{client}', [ClientController::class, 'update']);
+    });
     Route::get('/{client}/bookings', [BookingController::class, 'getUserBookings']);
     Route::get('/{client}/cars', [CarsController::class, 'getUserCars']);
 });
