@@ -68,6 +68,16 @@ const routes = [
         }
     },
     {
+        path: '/dashboard/cars/:id',
+        name: 'CarDetails',
+        component: () => import('../components/pages/dashboard/components/cars/CarDetails.vue'),
+        meta: {
+            title: 'Інформація про автомобіль',
+            subtitle: 'Деталі автомобіля',
+            requiresAuth: true,
+        }
+    },
+    {
         path: '/dashboard/reports',
         name: 'Reports',
         component: () => import('../components/pages/dashboard/components/Reports.vue'),

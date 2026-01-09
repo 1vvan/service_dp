@@ -1,5 +1,5 @@
 <template>
-    <el-table v-loading="loading" :data="cars" class="dash-table">
+    <el-table v-loading="loading" :data="cars" class="dash-table" @row-click="handleRowClick" :row-style="{ cursor: 'pointer' }">
         <el-table-column prop="full_name" label="Авто" width="100">
             <template #default="scope">
                 <div class="name-column">
@@ -80,6 +80,9 @@ export default {
         }
     },
     methods: {
+        handleRowClick(row) {
+            this.$router.push({ name: 'CarDetails', params: { id: row.id } });
+        },
         editCar(carId) {
             this.$emit('edit-car', carId);
         },

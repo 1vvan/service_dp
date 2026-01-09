@@ -39,7 +39,7 @@ class CarsController extends Controller
             return response()->json(['message' => 'Car not found'], 404);
         }
 
-        $car->load('carModel.brand', 'latestBooking', 'fuelType', 'engineType', 'gearboxType', 'driveUnitType');
+        $car->load('carModel.brand', 'bookings', 'latestBooking', 'fuelType', 'engineType', 'gearboxType', 'driveUnitType');
 
         return response()->json($car);
     }
