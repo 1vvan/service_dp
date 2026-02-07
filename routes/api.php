@@ -68,6 +68,8 @@ Route::prefix('cars')->group(function () {
         Route::post('/{client}/create', [CarsController::class, 'createCar']);
         Route::post('/{car}/confirm', [CarsController::class, 'confirmCar']);
         Route::post('/{car}/update', [CarsController::class, 'updateCar']);
+        Route::post('/{car}/photos', [CarsController::class, 'uploadPhoto']);
+        Route::delete('/{car}/photos/{photo}', [CarsController::class, 'deletePhoto']);
     });
 });
 

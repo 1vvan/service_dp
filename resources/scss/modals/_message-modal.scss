@@ -1,0 +1,73 @@
+@use '../variables' as *;
+
+.el-message-box {
+    background: rgba($card, 0.95) !important;
+    backdrop-filter: blur(32px);
+    border: 1px solid rgba($border, 0.6) !important;
+    border-radius: 1rem !important;
+    box-shadow: $shadow-elevated !important;
+
+    .el-message-box__header {
+        padding: 0;
+        margin-bottom: 1.5rem;
+        margin-top: 10px;
+    }
+
+    .el-message-box__title {
+        font-size: 1.5rem;
+        font-family: $font-display;
+        font-weight: 700;
+        color: $foreground;
+        margin-bottom: 0.5rem;
+    }
+
+    .el-message-box__headerbtn {
+        top: 1rem;
+        right: 1rem;
+        
+        .el-dialog__close {
+            color: $muted-foreground;
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
+            
+            &:hover {
+                color: $foreground;
+            }
+        }
+    }
+
+    .el-message-box__message {
+        p {
+            color: $muted-foreground;
+            font-size: 1rem;
+        }
+    }
+
+    .el-message-box__btns {
+        button {
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        button.el-button--primary {
+            background-color: $orange-500;
+            border-color: $orange-500;
+            color: $foreground;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        & button:hover {
+            background-color: $orange-600;
+            border-color: $orange-600;
+            transition: all 0.3s ease;
+            color: $foreground;
+        }
+    }
+}

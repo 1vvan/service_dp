@@ -1,0 +1,171 @@
+@use '../variables' as *;
+
+.upload-photo-modal {
+    background: rgba($card, 0.95) !important;
+    backdrop-filter: blur(32px);
+    border: 1px solid rgba($border, 0.6) !important;
+    border-radius: 1rem !important;
+    box-shadow: $shadow-elevated !important;
+
+    .upload-photo-header {
+        padding: 0;
+        margin-bottom: 1.5rem;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .el-dialog__body {
+        padding: 0;
+    }
+    
+    .upload-photo-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.5rem;
+        font-family: $font-display;
+        font-weight: 700;
+        color: $foreground;
+        margin-bottom: 0.5rem;
+    }
+
+    .el-dialog__headerbtn {
+        top: 1rem;
+        right: 1rem;
+        
+        .el-dialog__close {
+            color: $muted-foreground;
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
+            
+            &:hover {
+                color: $foreground;
+            }
+        }
+    }
+    
+    .upload-photo-description {
+        color: $muted-foreground;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+    
+    .car-photo-upload {
+        width: 100%;
+    }
+
+    .el-upload-dragger {
+        background-color: $border;
+        border-color: $border;
+
+        & .el-upload__text {
+            color: $muted-foreground;
+
+            & em {
+                color: $orange-500;
+            }
+        }
+    }
+
+    .el-upload__tip {
+        color: $muted-foreground;
+    }
+    
+    .car-photo-upload :deep(.el-upload-dragger) {
+        width: 100%;
+    }
+    
+    .preview-section {
+        margin-top: 16px;
+    }
+
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+    }
+
+    .preview-item {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        background: $border;
+
+        .preview-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            display: block;
+        }
+
+        .preview-filename {
+            padding: 4px 8px;
+            font-size: 11px;
+            color: $muted-foreground;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview-remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            opacity: 0.9;
+            padding: 4px;
+        }
+    }
+
+    .el-upload-list__item {
+        &:hover {
+            background-color: $border;
+        }
+
+        .el-upload-list__item-file-name {
+            color: $foreground;
+        }
+
+        .el-icon {
+            color: $muted-foreground;
+
+            &:hover {
+                color: $foreground;
+            }
+        }
+    }
+    
+    .dialog-footer {
+        display: flex;
+        justify-content: flex-end;
+
+        & button {
+            background-color: $orange-500;
+            border-color: $orange-500;
+            color: $foreground;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+
+            
+            &:hover {
+                background-color: $orange-600;
+                border-color: $orange-600;
+                transition: all 0.3s ease;
+            }
+
+            &.cancel-button {
+                background-color: $secondary;
+                border-color: $border;
+                color: $foreground;
+                
+                &:hover {
+                    background-color: rgba($secondary, 0.8);
+                    border-color: rgba($primary, 0.5);
+                    color: $foreground;
+                }
+            }
+        }
+    }
+}

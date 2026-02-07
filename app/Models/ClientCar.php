@@ -105,4 +105,9 @@ class ClientCar extends Model
         return $this->hasOne(Booking::class, 'car_id')
             ->latestOfMany('created_at');
     }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(CarPhoto::class, 'client_car_id')->orderBy('sort_order');
+    }
 }

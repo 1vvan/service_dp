@@ -89,6 +89,16 @@ const actions = {
             .catch(error => {
                 return Promise.reject(error);
             });
+    },
+    uploadCarPhoto({ }, { carId, file }) {
+        const formData = new FormData();
+        formData.append('photo', file);
+        return axios.post(`/api/cars/${carId}/photos`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        }).then(response => response.data);
+    },
+    deleteCarPhoto({ }, { carId, photoId }) {
+        return axios.delete(`/api/cars/${carId}/photos/${photoId}`);
     }
 };
 

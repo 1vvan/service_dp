@@ -9,17 +9,30 @@
                     </el-button>
                     <h1 class="title">Інформація про автомобіль</h1>
                 </div>
-                <div class="action-buttons" v-if="isManagerOrAdmin && !loading && car">
-                    <el-button v-if="!editMode" type="primary" class="edit" @click="enableEditMode">
-                        <el-icon><Edit /></el-icon>
-                        <span>Редагувати</span>
-                    </el-button>
+                <div class="action-buttons" v-if="!loading && car">
+                    <template v-if="isManagerOrAdmin">
+                        <el-button v-if="!editMode" type="primary" class="edit" @click="enableEditMode">
+                            <el-icon><Edit /></el-icon>
+                            <span>Редагувати</span>
+                        </el-button>
+                        <el-button v-if="!editMode" class="photo-btn" @click="openUploadPhotoModal">
+                            <el-icon><Picture /></el-icon>
+                            <span>Додати фото</span>
+                        </el-button>
+                    </template>
                     <template v-else>
                         <el-button @click="cancelEdit" class="reject">Скасувати</el-button>
                         <el-button type="primary" @click="saveCar" class="edit" :loading="saving">Зберегти</el-button>
                     </template>
                 </div>
             </div>
+
+            <UploadCarPhotoModal
+                :isOpen="isUploadPhotoModalOpen"
+                :carId="car?.id"
+                @close="closeUploadPhotoModal"
+                @uploaded="onPhotoUploaded"
+            />
 
             <el-card v-loading="loading" class="car-details-card">
                 <div v-if="!loading && car" class="car-info">
@@ -195,25 +208,50 @@
                         </div>
                         <div class="detail-item">
                             <label>Тип палива</label>
-                            <p>{{ car.fuel_type.name || 'Не вказано' }}</p>
+                            <p>{{ car.fuel_type?.name || 'Не вказано' }}</p>
                         </div>
                         <div class="detail-item">
                             <label>Тип двигуна</label>
-                            <p>{{ car.engine_type.name || 'Не вказано' }}</p>
+                            <p>{{ car.engine_type?.name || 'Не вказано' }}</p>
                         </div>
                         <div class="detail-item">
                             <label>Тип коробки передач</label>
-                            <p>{{ car.gearbox_type.name || 'Не вказано' }}</p>
+                            <p>{{ car.gearbox_type?.name || 'Не вказано' }}</p>
                         </div>
                         <div class="detail-item">
                             <label>Тип приводу</label>
-                            <p>{{ car.drive_unit_type.name || 'Не вказано' }}</p>
+                            <p>{{ car.drive_unit_type?.name || 'Не вказано' }}</p>
                         </div>
                         <div class="detail-item">
                             <label>Статус перевірки</label>
                             <p>
                                 <span class="status-badge" :class="car.checked_by ? 'confirmed' : 'in-progres'">{{ car.checked_by ? 'Перевірено' : 'На розгляді'}}</span>
                             </p>
+                        </div>
+                    </div>
+
+                    <div v-if="car.photos && car.photos.length" class="car-photos-section">
+                        <h3 class="photos-title">Фото автомобіля</h3>
+                        <div class="car-photos-grid">
+                            <div v-for="photo in car.photos" :key="photo.id" class="photo-item">
+                                <el-image
+                                    :src="photo.url"
+                                    :preview-src-list="car.photos.map(p => p.url)"
+                                    fit="cover"
+                                    class="car-photo-img"
+                                    :initial-index="car.photos.indexOf(photo)"
+                                />
+                                <el-button
+                                    v-if="isManagerOrAdmin"
+                                    type="danger"
+                                    size="small"
+                                    circle
+                                    class="photo-delete-btn"
+                                    @click="deletePhoto(photo)"
+                                >
+                                    <el-icon><Delete /></el-icon>
+                                </el-button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -224,15 +262,19 @@
 
 <script>
 import DashboardLayout from '../../../../../layouts/DashboardLayout.vue';
-import { ArrowLeft, Edit } from '@element-plus/icons-vue';
+import UploadCarPhotoModal from '../../../../modals/UploadCarPhotoModal.vue';
+import { ArrowLeft, Edit, Picture, Delete } from '@element-plus/icons-vue';
 import { formatLicencePlate } from '../../../../../lib/utils';
 
 export default {
     name: 'CarDetails',
     components: {
         DashboardLayout,
+        UploadCarPhotoModal,
         ArrowLeft,
-        Edit
+        Edit,
+        Picture,
+        Delete
     },
     data() {
         return {
@@ -240,6 +282,7 @@ export default {
             saving: false,
             car: null,
             editMode: false,
+            isUploadPhotoModalOpen: false,
             formData: {
                 brand_id: null,
                 car_model_id: null,
@@ -399,6 +442,37 @@ export default {
         },
         formatLicensePlateValue(value) {
             this.formData.license_plate = formatLicencePlate(value);
+        },
+        openUploadPhotoModal() {
+            this.isUploadPhotoModalOpen = true;
+        },
+        closeUploadPhotoModal() {
+            this.isUploadPhotoModalOpen = false;
+        },
+        onPhotoUploaded() {
+            this.loadCarDetails();
+        },
+        async deletePhoto(photo) {
+            try {
+                await this.$confirm('Видалити це фото?', 'Підтвердження', {
+                    confirmButtonText: 'Так',
+                    cancelButtonText: 'Скасувати',
+                    type: 'warning'
+                });
+            } catch {
+                return;
+            }
+
+            try {
+                await this.$store.dispatch('cars/deleteCarPhoto', {
+                    carId: this.car.id,
+                    photoId: photo.id
+                });
+                this.$message.success('Фото видалено');
+                this.loadCarDetails();
+            } catch (error) {
+                this.$message.error(error.response?.data?.message || 'Помилка видалення фото');
+            }
         },
         goBack() {
             if (this.isManagerOrAdmin) {
