@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReferenceController;
+use App\Http\Controllers\Api\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -71,6 +72,13 @@ Route::prefix('cars')->group(function () {
         Route::post('/{car}/photos', [CarsController::class, 'uploadPhoto']);
         Route::delete('/{car}/photos/{photo}', [CarsController::class, 'deletePhoto']);
     });
+});
+
+Route::prefix('services')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [ServiceController::class, 'index']);
+    Route::post('/', [ServiceController::class, 'store']);
+    Route::put('/{service}', [ServiceController::class, 'update']);
+    Route::delete('/{service}', [ServiceController::class, 'destroy']);
 });
 
 Route::prefix('dashboard')->group(function () {

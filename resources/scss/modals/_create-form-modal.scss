@@ -141,6 +141,10 @@
             color: $muted-foreground;
         }
 
+        .el-input__count-inner {
+            background: transparent !important;
+        }
+
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -148,6 +152,18 @@
 
         input[type='number'] {
             -moz-appearance: textfield;
+        }
+    }
+
+    .el-input-number {
+        .el-input-number__decrease,
+        .el-input-number__increase {
+            background: transparent !important;
+            border-color: $gray-600 !important;
+
+            .el-icon {
+                color: $foreground;
+            }
         }
     }
 

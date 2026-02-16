@@ -50,7 +50,7 @@ const routes = [
     {
         path: '/dashboard/services',
         name: 'Services',
-        component: () => import('../components/pages/dashboard/components/Services.vue'),
+        component: () => import('../components/pages/dashboard/components/services/Services.vue'),
         meta: {
             title: 'Послуги',
             subtitle: 'Керування послугами',

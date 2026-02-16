@@ -108,17 +108,24 @@ export default {
                     path: '/dashboard/client-cars'
                 },
             ],
-            adminPages: [
+            adminOnlyPages: [
                 {
-                    name: 'Головна',
-                    icon: 'HomeFilled',
-                    path: '/dashboard'
+                    name: 'Послуги',
+                    icon: 'Setting',
+                    path: '/dashboard/services'
                 },
-                
+                {
+                    name: 'Звіти',
+                    icon: 'Document',
+                    path: '/dashboard/reports'
+                },
             ]
         };
     },
     computed: {
+        adminPages() {
+            return [...this.managerPages, ...this.adminOnlyPages];
+        },
         pages() {
             if (this.$store.state.isAdmin) {
                 return this.adminPages;

@@ -6,6 +6,7 @@ import bookings from './modules/bookings';
 import cars from './modules/cars';
 import clients from './modules/clients';
 import dash from './modules/dash';
+import services from './modules/services';
 
 const token = localStorage.getItem('token');
 if (token) {
@@ -108,6 +109,7 @@ export default createStore({
         bookings,
         cars,
         clients,
-        dash
+        dash,
+        services
     }
 });
