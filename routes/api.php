@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReferenceController;
+use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\ServiceController;
 use Illuminate\Support\Facades\Route;
 
@@ -84,4 +85,13 @@ Route::prefix('services')->middleware('auth:sanctum')->group(function () {
 Route::prefix('dashboard')->group(function () {
     Route::get('/stats/{clientId}', [DashboardController::class, 'getStats']);
     Route::get('/manager-stats', [DashboardController::class, 'getManagerStats']);
+});
+
+Route::prefix('reports')->middleware('auth:sanctum')->group(function () {
+    Route::get('/revenue-by-month', [ReportController::class, 'revenueByMonth']);
+    Route::get('/popular-services', [ReportController::class, 'popularServices']);
+    Route::get('/bookings-by-status', [ReportController::class, 'bookingsByStatus']);
+    Route::get('/export/revenue-by-month', [ReportController::class, 'exportRevenueExcel']);
+    Route::get('/export/popular-services', [ReportController::class, 'exportPopularServicesExcel']);
+    Route::get('/export/bookings-by-status', [ReportController::class, 'exportBookingsByStatusExcel']);
 });
