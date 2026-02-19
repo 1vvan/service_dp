@@ -59,6 +59,10 @@
             font-weight: 500;
             color: hsl(215 15% 55%);
         }
+
+        &.form-group-full {
+            grid-column: 1 / -1;
+        }
     }
 
     .form-actions {
@@ -92,6 +96,11 @@
         box-shadow: none !important;
     }
 
+    .el-textarea__inner {
+        min-height: 100px !important;
+    }
+
+    .el-textarea__inner,
     .el-input__inner {
         background-color: hsl(220 18% 12%);
         border: 1px solid hsl(220 15% 22%);
@@ -104,6 +113,10 @@
         &.is-focus {    
             border-color: $orange-500;
         }
+    }
+
+    .el-input__count {
+        background: transparent !important;
     }
 }
 

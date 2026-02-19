@@ -9,15 +9,41 @@
                     <span class="text">Додати клієнта</span>
                 </button>
             </div>
-            <ClientsTable :clients="clients" :loading="loading" @view-client="viewClient" />
+
+            <div class="search-row">
+                <el-input
+                    v-model="searchQuery"
+                    placeholder="Пошук за ПІБ, телефоном, email або авто (номер, VIN)"
+                    clearable
+                    class="search-input"
+                    @input="onSearchInput"
+                >
+                    <template #prefix>
+                        <el-icon><Search /></el-icon>
+                    </template>
+                </el-input>
+            </div>
+
+            <ClientsTable
+                :clients="clients"
+                :loading="loading"
+                @view-client="viewClient"
+                @delete-client="handleDeleteClient"
+            />
+
+            <CreateClientModal
+                :isOpen="isCreateClientModalOpen"
+                @close="closeCreateClientModal"
+                @saved="onClientSaved"
+            />
         </div>
     </DashboardLayout>
 </template>
 
 <script>
-import axios from 'axios';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import DashboardLayout from '../../../../../layouts/DashboardLayout.vue';
+import CreateClientModal from '../../../../modals/CreateClientModal.vue';
 import ClientsTable from './ClientsTable.vue';
 import { USER_ROLES } from '../../../../../constants/types';
 
@@ -25,13 +51,16 @@ export default {
     name: 'Clients',
     components: {
         DashboardLayout,
+        CreateClientModal,
         ClientsTable
     },
     data() {
         return {
-            clients: [],
-            loading: false
-        }
+            loading: false,
+            searchQuery: '',
+            searchDebounce: null,
+            isCreateClientModalOpen: false
+        };
     },
     computed: {
         user() {
@@ -40,6 +69,9 @@ export default {
         isManagerOrAdmin() {
             if (!this.user) return false;
             return this.user.role_id === USER_ROLES.MANAGER || this.user.role_id === USER_ROLES.ADMIN;
+        },
+        clients() {
+            return this.$store.state.clients?.clientsList ?? [];
         }
     },
     mounted() {
@@ -50,13 +82,19 @@ export default {
         this.fetchClients();
     },
     methods: {
+        onSearchInput() {
+            if (this.searchDebounce) clearTimeout(this.searchDebounce);
+            this.searchDebounce = setTimeout(() => {
+                this.fetchClients();
+            }, 300);
+        },
         async fetchClients() {
             this.loading = true;
             try {
-                const response = await axios.get('/api/clients');
-                this.clients = response.data;
+                await this.$store.dispatch('clients/fetchClients', {
+                    search: this.searchQuery.trim() || undefined
+                });
             } catch (error) {
-                console.error('Помилка при завантаженні клієнтів:', error);
                 ElMessage.error('Помилка при завантаженні клієнтів');
             } finally {
                 this.loading = false;
@@ -66,7 +104,33 @@ export default {
             this.$router.push({ name: 'ClientProfile', params: { id: clientId } });
         },
         openCreateClientModal() {
-            console.log('Open create client modal');
+            this.isCreateClientModalOpen = true;
+        },
+        closeCreateClientModal() {
+            this.isCreateClientModalOpen = false;
+        },
+        onClientSaved() {
+            this.closeCreateClientModal();
+        },
+        async handleDeleteClient(client) {
+            try {
+                await ElMessageBox.confirm(
+                    `Видалити клієнта "${client.full_name}"? Усі пов\'язані авто та записи також будуть видалені.`,
+                    'Підтвердження видалення',
+                    {
+                        confirmButtonText: 'Видалити',
+                        cancelButtonText: 'Скасувати',
+                        type: 'warning'
+                    }
+                );
+
+                await this.$store.dispatch('clients/deleteClient', client.id);
+                ElMessage.success('Клієнта видалено');
+            } catch (error) {
+                if (error !== 'cancel') {
+                    ElMessage.error(error.response?.data?.message || 'Помилка видалення клієнта');
+                }
+            }
         }
     }
 };
@@ -95,4 +159,3 @@ export default {
     font-weight: 400;
 }
 </style>
-

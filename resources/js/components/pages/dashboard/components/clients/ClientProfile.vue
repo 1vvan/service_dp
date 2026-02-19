@@ -23,6 +23,19 @@
                             <el-input v-model="clientForm.phone" placeholder="+380 (XX) XXX-XX-XX" />
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group form-group-full">
+                            <label>Примітки менеджера</label>
+                            <el-input
+                                v-model="clientForm.manager_notes"
+                                type="textarea"
+                                :rows="4"
+                                placeholder="Нотатки про клієнта (видимі лише менеджерам та адміністраторам)"
+                                maxlength="5000"
+                                show-word-limit
+                            />
+                        </div>
+                    </div>
                     <div class="form-actions">
                         <el-button type="primary" @click="saveClientInfo" :loading="saving">
                             <el-icon><DocumentChecked /></el-icon>
@@ -141,7 +154,8 @@ export default {
             clientForm: {
                 full_name: '',
                 email: '',
-                phone: ''
+                phone: '',
+                manager_notes: ''
             }
         };
     },
@@ -160,7 +174,8 @@ export default {
                     this.clientForm = {
                         full_name: newClient.full_name || '',
                         email: newClient.email || '',
-                        phone: newClient.phone || ''
+                        phone: newClient.phone || '',
+                        manager_notes: newClient.manager_notes || ''
                     };
                 }
             },
@@ -196,7 +211,12 @@ export default {
             try {
                 await this.$store.dispatch('clients/updateClient', {
                     clientId: this.client.id,
-                    data: this.clientForm
+                    data: {
+                        full_name: this.clientForm.full_name,
+                        email: this.clientForm.email,
+                        phone: this.clientForm.phone,
+                        manager_notes: this.clientForm.manager_notes || null
+                    }
                 });
                 ElMessage.success('Інформацію про клієнта оновлено');
             } catch (error) {

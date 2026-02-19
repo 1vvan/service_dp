@@ -20,23 +20,30 @@
                 <span>{{ scope.row.phone || '-' }}</span>
             </template>
         </el-table-column>
-        <el-table-column prop="cars_count" label="Автомобілів" width="120" align="center">
+        <el-table-column prop="cars_count" sortable label="Автомобілів" width="120" align="center">
             <template #default="scope">
                 <span class="white-text">{{ scope.row.cars_count || 0 }}</span>
             </template>
         </el-table-column>
-        <el-table-column prop="bookings_count" label="Записів" width="100" align="center">
+        <el-table-column prop="bookings_count" sortable label="Записів" width="100" align="center">
             <template #default="scope">
                 <span class="white-text">{{ scope.row.bookings_count || 0 }}</span>
             </template>
         </el-table-column>
-        <el-table-column label="Дії" width="100" align="center">
+        <el-table-column label="Дії" width="120" align="center">
             <template #default="scope">
                 <el-dropdown placement="bottom">
-                    <el-button> <el-icon><Grid /></el-icon>  </el-button>
+                    <el-button><el-icon><Grid /></el-icon></el-button>
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item @click="viewClient(scope.row.id)"><el-icon><View /></el-icon> Переглянути</el-dropdown-item>
+                            <el-dropdown-item @click="viewClient(scope.row.id)">
+                                <el-icon><View /></el-icon>
+                                Переглянути
+                            </el-dropdown-item>
+                            <el-dropdown-item @click="deleteClient(scope.row)" class="danger-item">
+                                <el-icon><Delete /></el-icon>
+                                Видалити
+                            </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -46,15 +53,14 @@
 </template>
 
 <script>
-import { Grid, Edit, View } from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
+import { Grid, View, Delete } from '@element-plus/icons-vue';
 
 export default {
     name: 'ClientsTable',
     components: {
         Grid,
-        Edit,
-        View
+        View,
+        Delete
     },
     props: {
         clients: {
@@ -70,7 +76,16 @@ export default {
         viewClient(clientId) {
             this.$emit('view-client', clientId);
         },
+        deleteClient(client) {
+            this.$emit('delete-client', client);
+        }
     }
-}
+};
 </script>
+
+<style scoped>
+.danger-item {
+    color: var(--el-color-danger);
+}
+</style>
 

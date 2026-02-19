@@ -36,8 +36,10 @@ Route::prefix('references')->group(function () {
 Route::prefix('clients')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [ClientController::class, 'index']);
+        Route::post('/', [ClientController::class, 'store']);
         Route::get('/{client}', [ClientController::class, 'show']);
         Route::put('/{client}', [ClientController::class, 'update']);
+        Route::delete('/{client}', [ClientController::class, 'destroy']);
     });
     Route::get('/{client}/bookings', [BookingController::class, 'getUserBookings']);
     Route::get('/{client}/cars', [CarsController::class, 'getUserCars']);

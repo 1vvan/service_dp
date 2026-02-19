@@ -44,4 +44,62 @@
             }
         }
     }
+
+    .search-row {
+        margin-bottom: 16px;
+
+        .el-input {
+            max-width: 500px;
+            .el-input__wrapper {
+                background-color: $gray-750;
+                border: 1px solid $gray-700;
+                border-radius: $border-radius-md;
+                box-shadow: none !important;
+                padding: 8px 15px !important;
+                transition: all 0.2s ease;
+                height: 36px;
+                
+                &:hover {
+                    border-color: rgba($primary, 0.5);
+                }
+                
+                &.is-focus {
+                    border-color: $primary;
+                    box-shadow: 0 0 0 2px rgba($primary, 0.1);
+                }
+            }
+    
+            .el-input__inner {
+                height: auto !important;
+                max-height: 21px !important;
+                color: $foreground;
+                background-color: transparent;
+                
+                &::placeholder {
+                    color: $muted-foreground;
+                }
+            }
+    
+            .el-input__prefix {
+                color: $muted-foreground;
+            }
+    
+            .el-input__suffix {
+                color: $muted-foreground;
+            }
+    
+            .el-input__count-inner {
+                background: transparent !important;
+            }
+    
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+            }
+    
+            input[type='number'] {
+                -moz-appearance: textfield;
+            }
+        }
+    }
 }

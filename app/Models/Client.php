@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Client extends Model
 {
-    protected $fillable = ['full_name', 'email', 'phone'];
+    protected $fillable = ['full_name', 'email', 'phone', 'manager_notes'];
 
     public function cars(): HasMany
     {
