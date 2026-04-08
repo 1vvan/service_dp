@@ -20,44 +20,36 @@
         </el-table-column>
         <el-table-column prop="vin" label="VIN" width="100" />
         <el-table-column prop="car_year" label="Рік" width="100" />
-        <el-table-column label="Дії" width="40" align="center" class-name="actions-column">
+        <el-table-column v-if="isManagerOrAdmin" label="Дії" width="56" align="center" class-name="actions-column">
             <template #default="scope">
-                <el-tooltip :content="scope.row.checked_by ? 'Перевірено' : 'Не перевірено'" placement="top">
-                    <div class="indicator" :class="scope.row.checked_by ? 'green' : 'red'"></div>
-                </el-tooltip>
-                <el-dropdown placement="bottom">
-                    <el-button> <el-icon><Grid /></el-icon>  </el-button>
-                    <template #dropdown>
-                        <el-dropdown-menu>
-                            <el-dropdown-item>
-                                <div @click="editCar(scope.row.id)" style="display: flex; align-items: center; gap: 8px;">
-                                    <el-icon><Edit /></el-icon>
-                                    <span>Редагувати</span>
-                                </div>
-                            </el-dropdown-item>
-                            <el-dropdown-item v-if="!scope.row.checked_by && isManagerOrAdmin">
-                                <div @click="confirmCar(scope.row.id)" style="display: flex; align-items: center; gap: 8px;">
-                                    <el-icon><Check /></el-icon>
-                                    <span>Підтвердити</span>
-                                </div>
-                            </el-dropdown-item>
-                        </el-dropdown-menu>
-                    </template>
-                </el-dropdown>
+                <div class="actions-cell" @click.stop @mousedown.stop>
+                    <el-tooltip
+                        v-if="!scope.row.checked_by"
+                        content="Підтвердити авто"
+                        placement="top"
+                    >
+                        <el-button
+                            type="success"
+                            circle
+                            size="small"
+                            class="confirm-car-btn"
+                            @click.stop="confirmCar(scope.row.id)"
+                        >
+                            <el-icon><Check /></el-icon>
+                        </el-button>
+                    </el-tooltip>
+                </div>
             </template>
         </el-table-column>
     </el-table>
 </template>
 
 <script>
-import { Grid, Tickets, Edit, Check } from '@element-plus/icons-vue';
+import { Check } from '@element-plus/icons-vue';
 
 export default {
     name: 'CarsTable',
     components: {
-        Grid,
-        Tickets,
-        Edit,
         Check
     },
     props: {
@@ -80,11 +72,11 @@ export default {
         }
     },
     methods: {
-        handleRowClick(row) {
+        handleRowClick(row, _column, event) {
+            if (event?.target?.closest?.('.actions-cell')) {
+                return;
+            }
             this.$router.push({ name: 'CarDetails', params: { id: row.id } });
-        },
-        editCar(carId) {
-            this.$emit('edit-car', carId);
         },
         confirmCar(carId) {
             this.$store.dispatch('cars/confirmCar', carId)
@@ -98,3 +90,16 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.actions-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+}
+
+.confirm-car-btn {
+    flex-shrink: 0;
+}
+</style>

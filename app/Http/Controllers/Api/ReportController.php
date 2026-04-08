@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingService;
 use App\Models\PaymentTransaction;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,11 +19,6 @@ class ReportController extends Controller
 {
     public function revenueByMonth(Request $request): JsonResponse
     {
-        $user = $request->user();
-        if (!$user || $user->role_id !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Доступ заборонено'], 403);
-        }
-
         $year = $request->input('year', now()->year);
         $months = $request->input('months', 12);
 
@@ -57,13 +51,8 @@ class ReportController extends Controller
         ]);
     }
 
-    public function popularServices(Request $request): JsonResponse
+    public function popularServices(): JsonResponse
     {
-        $user = $request->user();
-        if (!$user || $user->role_id !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Доступ заборонено'], 403);
-        }
-
         $data = BookingService::query()
             ->join('services', 'booking_services.service_id', '=', 'services.id')
             ->select('services.id', 'services.name', DB::raw('COUNT(*) as count'))
@@ -78,13 +67,8 @@ class ReportController extends Controller
         ]);
     }
 
-    public function bookingsByStatus(Request $request): JsonResponse
+    public function bookingsByStatus(): JsonResponse
     {
-        $user = $request->user();
-        if (!$user || $user->role_id !== User::ROLE_ADMIN) {
-            return response()->json(['message' => 'Доступ заборонено'], 403);
-        }
-
         $data = DB::table('bookings')
             ->join('booking_statuses', 'bookings.status_id', '=', 'booking_statuses.id')
             ->select('booking_statuses.id', 'booking_statuses.name', DB::raw('COUNT(*) as count'))
@@ -101,11 +85,6 @@ class ReportController extends Controller
 
     public function exportRevenueExcel(Request $request): BinaryFileResponse
     {
-        $user = $request->user();
-        if (!$user || $user->role_id !== User::ROLE_ADMIN) {
-            abort(403);
-        }
-
         $year = $request->input('year', now()->year);
 
         return Excel::download(
@@ -115,13 +94,8 @@ class ReportController extends Controller
         );
     }
 
-    public function exportPopularServicesExcel(Request $request): BinaryFileResponse
+    public function exportPopularServicesExcel(): BinaryFileResponse
     {
-        $user = $request->user();
-        if (!$user || $user->role_id !== User::ROLE_ADMIN) {
-            abort(403);
-        }
-
         return Excel::download(
             new PopularServicesExport(),
             'populyarni-posluhy.xlsx',
@@ -129,13 +103,8 @@ class ReportController extends Controller
         );
     }
 
-    public function exportBookingsByStatusExcel(Request $request): BinaryFileResponse
+    public function exportBookingsByStatusExcel(): BinaryFileResponse
     {
-        $user = $request->user();
-        if (!$user || $user->role_id !== User::ROLE_ADMIN) {
-            abort(403);
-        }
-
         return Excel::download(
             new BookingsByStatusExport(),
             'zapysy-za-statusamy.xlsx',

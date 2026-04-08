@@ -119,6 +119,13 @@ export default {
                     icon: 'Document',
                     path: '/dashboard/reports'
                 },
+            ],
+            masterPages: [
+                {
+                    name: 'Мої записи',
+                    icon: 'Calendar',
+                    path: '/dashboard/master'
+                },
             ]
         };
     },
@@ -131,6 +138,8 @@ export default {
                 return this.adminPages;
             } else if (this.$store.state.isManager) {
                 return this.managerPages;
+            } else if (this.$store.state.isMaster) {
+                return this.masterPages;
             } else {
                 return this.clientPages;
             }

@@ -4,12 +4,12 @@
             <div class="top">
                 <h1 class="title">Ви маєте <span class="count">{{ cars.length }}</span> {{ carsWord }}</h1>
 
-                <button class="create-car-btn" @click="openCreateCarModal">
+                <button v-if="isManagerOrAdmin" class="create-car-btn" @click="openCreateCarModal">
                     <el-icon><Plus /></el-icon>
                     <span class="text">Додати автомобіль</span>
                 </button>
             </div>
-            <CarsTable :cars="cars" :loading="loading" @edit-car="editCar" />
+            <CarsTable :cars="cars" :loading="loading" />
         </div>
 
         <CreateCarModal :isOpen="isCreateCarModalOpen" @close="closeCreateCarModal" :editingCarId="editingCarId" />
@@ -39,6 +39,9 @@ export default {
     computed: {
         user() {
             return this.$store.state.user;
+        },
+        isManagerOrAdmin() {
+            return this.$store.state.isManagerOrAdmin;
         },
         cars() {
             return this.$store.state.cars.userCars || [];
@@ -73,10 +76,6 @@ export default {
             this.isCreateCarModalOpen = false;
             this.editingCarId = null;
         },
-        editCar(carId) {
-            this.editingCarId = carId;
-            this.isCreateCarModalOpen = true;
-        }
     }
 };
 </script>

@@ -56,7 +56,7 @@ class BookingRepository implements BookingRepositoryInterface
         $carYear = (int) $car->car_year;
         $yearsOld = max(0, $currentYear - $carYear);
         
-        $yearModifierPercent = min(50, $yearsOld * 5);
+        $yearModifierPercent = min(10, $yearsOld * 0.5);
         $yearModifier = ($basePrice * $yearModifierPercent) / 100;
 
         return round($basePrice + $yearModifier, 2);
@@ -132,13 +132,19 @@ class BookingRepository implements BookingRepositoryInterface
         $priceDetails = $this->calculatePriceDetails($data['car_id'], $data['service_ids']);
         $totalPrice = $priceDetails['total_price'];
 
-        $booking->update([
+        $updatePayload = [
             'car_id' => $data['car_id'],
             'date' => $data['date'],
             'description' => $data['comment'] ?? null,
             'total_price' => $totalPrice,
             'price_calculation' => $priceDetails,
-        ]);
+        ];
+
+        if (array_key_exists('master_id', $data)) {
+            $updatePayload['master_id'] = $data['master_id'];
+        }
+
+        $booking->update($updatePayload);
 
         if (!empty($data['service_ids'])) {
             $booking->services()->sync($data['service_ids']);
@@ -146,7 +152,7 @@ class BookingRepository implements BookingRepositoryInterface
             $booking->services()->detach();
         }
 
-        $booking->load(['car.carModel.brand', 'services', 'client', 'status']);
+        $booking->load(['car.carModel.brand', 'services', 'client', 'status', 'master']);
 
         return $booking;
     }
@@ -163,5 +169,21 @@ class BookingRepository implements BookingRepositoryInterface
         ]);
 
         return $booking;
+    }
+
+    public function assignMaster(int $bookingId, ?int $masterId): Booking
+    {
+        $booking = Booking::findOrFail($bookingId);
+        $booking->update(['master_id' => $masterId]);
+
+        return $booking->load(['car.carModel.brand', 'services', 'client', 'status', 'master']);
+    }
+
+    public function updateStatus(int $bookingId, int $statusId): Booking
+    {
+        $booking = Booking::findOrFail($bookingId);
+        $booking->update(['status_id' => $statusId]);
+
+        return $booking->load(['car.carModel.brand', 'services', 'client', 'status', 'master']);
     }
 }

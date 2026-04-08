@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\PhoneNormalizer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -9,6 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Client extends Model
 {
     protected $fillable = ['full_name', 'email', 'phone', 'manager_notes'];
+
+    public function setPhoneAttribute(mixed $value): void
+    {
+        $this->attributes['phone'] = PhoneNormalizer::normalize(
+            is_string($value) ? $value : (string) $value
+        );
+    }
 
     public function cars(): HasMany
     {

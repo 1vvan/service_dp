@@ -11,6 +11,7 @@ use App\Models\EngineType;
 use App\Models\FuelType;
 use App\Models\GearboxType;
 use App\Models\Service;
+use App\Models\ServiceCategory;
 use Illuminate\Http\JsonResponse;
 
 class ReferenceController extends Controller
@@ -65,8 +66,13 @@ class ReferenceController extends Controller
 
     public function services(): JsonResponse
     {
-        $services = Service::orderBy('name')->get();
+        $services = Service::with('category')->orderBy('name')->get();
         return response()->json($services);
+    }
+
+    public function serviceCategories(): JsonResponse
+    {
+        return response()->json(ServiceCategory::orderBy('name')->get());
     }
 }
 

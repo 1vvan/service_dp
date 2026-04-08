@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Support\PhoneNormalizer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,6 +18,7 @@ class User extends Authenticatable
     const ROLE_CLIENT = 1;
     const ROLE_MANAGER = 2;
     const ROLE_ADMIN = 3;
+    const ROLE_MASTER = 4;
 
     /**
      * The attributes that are mass assignable.
@@ -29,7 +31,19 @@ class User extends Authenticatable
         'phone',
         'role_id',
         'password',
+        'client_id',
     ];
+
+    public function setPhoneAttribute(mixed $value): void
+    {
+        if ($value === null || $value === '') {
+            $this->attributes['phone'] = null;
+
+            return;
+        }
+        $normalized = PhoneNormalizer::normalize(is_string($value) ? $value : (string) $value);
+        $this->attributes['phone'] = $normalized === '' ? null : $normalized;
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -58,6 +72,11 @@ class User extends Authenticatable
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class, 'manager_id');
+    }
+
+    public function masterBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'master_id');
     }
 
     public function comments(): HasMany

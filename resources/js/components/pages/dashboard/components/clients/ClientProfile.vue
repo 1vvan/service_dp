@@ -20,7 +20,7 @@
                         </div>
                         <div class="form-group">
                             <label>Телефон</label>
-                            <el-input v-model="clientForm.phone" placeholder="+380 (XX) XXX-XX-XX" />
+                            <PhoneInput v-model="clientForm.phone" placeholder="+380 (00) 000 00 00" clearable />
                         </div>
                     </div>
                     <div class="form-row">
@@ -133,7 +133,8 @@
 
 <script>
 import DashboardLayout from '../../../../../layouts/DashboardLayout.vue';
-import { formatPrice } from '../../../../../lib/utils';
+import { formatPrice, formatPhone, normalizePhone } from '../../../../../lib/utils';
+import PhoneInput from '../../../../ui/PhoneInput.vue';
 import { BOOKING_STATUS_CLASS_MAPPING as bookingStatusClassMapping } from '../../../../../constants/mapping';
 import { UserFilled, Van, Calendar, DocumentChecked } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
@@ -145,7 +146,8 @@ export default {
         UserFilled,
         Van,
         Calendar,
-        DocumentChecked
+        DocumentChecked,
+        PhoneInput,
     },
     data() {
         return {
@@ -174,7 +176,7 @@ export default {
                     this.clientForm = {
                         full_name: newClient.full_name || '',
                         email: newClient.email || '',
-                        phone: newClient.phone || '',
+                        phone: newClient.phone ? formatPhone(newClient.phone) : '',
                         manager_notes: newClient.manager_notes || ''
                     };
                 }
@@ -214,7 +216,7 @@ export default {
                     data: {
                         full_name: this.clientForm.full_name,
                         email: this.clientForm.email,
-                        phone: this.clientForm.phone,
+                        phone: normalizePhone(this.clientForm.phone) || '',
                         manager_notes: this.clientForm.manager_notes || null
                     }
                 });

@@ -13,15 +13,38 @@ export function cn(...classes) {
 }
 
 export function normalizePhone(phone) {
-    if (!phone) return '';
-    return phone.replace(/\s|\(|\)/g, '');
+    if (phone === undefined || phone === null || phone === '') {
+        return '';
+    }
+    const digits = String(phone).replace(/\D/g, '');
+    if (digits.length === 0) {
+        return '';
+    }
+    let rest = digits;
+    if (rest.startsWith('380')) {
+        rest = rest.slice(3);
+    } else if (rest.startsWith('0')) {
+        rest = rest.slice(1);
+    }
+    rest = rest.slice(0, 9);
+    if (rest.length === 0) {
+        return '';
+    }
+    return '+380' + rest;
+}
+
+/** Початкове значення поля — одразу видно маску +380 ( */
+export const PHONE_INPUT_PREFIX = '+380 (';
+
+export function isUaMobileComplete(normalized) {
+    return /^\+380\d{9}$/.test(normalized || '');
 }
 
 export function formatPhone(value) {
     if (!value) return '';
-    
+
     let digits = value.replace(/[^\d+]/g, '');
-    
+
     if (!digits.startsWith('+380')) {
         digits = digits.replace(/^\+/, '');
         if (digits.startsWith('380')) {
@@ -32,15 +55,22 @@ export function formatPhone(value) {
             digits = '+380' + digits;
         }
     }
-    
+
     if (digits.length > 13) {
         digits = digits.substring(0, 13);
     }
-    
+
+    /* Лише код країни — показуємо маску +380 ( */
     if (digits.length <= 4) {
+        if (digits === '' || digits === '+') {
+            return '';
+        }
+        if (digits === '+380' || digits === '+38' || digits === '+3') {
+            return PHONE_INPUT_PREFIX;
+        }
         return digits;
     }
-    
+
     const phoneDigits = digits.substring(4);
     
     let formatted = '+380';

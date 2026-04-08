@@ -42,6 +42,24 @@
             </div>
 
             <div class="form-row">
+                <el-form-item label="Категорія" prop="category_id">
+                    <el-select
+                        v-model="formData.category_id"
+                        placeholder="Оберіть категорію"
+                        clearable
+                        style="width: 100%"
+                    >
+                        <el-option
+                            v-for="cat in categories"
+                            :key="cat.id"
+                            :label="cat.name"
+                            :value="cat.id"
+                        />
+                    </el-select>
+                </el-form-item>
+            </div>
+
+            <div class="form-row">
                 <el-form-item label="Базова вартість (грн)" prop="base_price">
                     <el-input-number
                         v-model="formData.base_price"
@@ -92,9 +110,11 @@ export default {
     emits: ['close', 'saved'],
     data() {
         return {
+            categories: [],
             formData: {
                 name: '',
-                base_price: 0
+                base_price: 0,
+                category_id: null,
             },
             formRules: {
                 name: [
@@ -121,6 +141,12 @@ export default {
             }
         }
     },
+    async mounted() {
+        try {
+            const res = await import('axios').then(m => m.default.get('/api/references/service-categories'));
+            this.categories = res.data || [];
+        } catch { /* ignore */ }
+    },
     watch: {
         isOpen(val) {
             if (val) {
@@ -143,13 +169,15 @@ export default {
                 if (service) {
                     this.formData = {
                         name: service.name,
-                        base_price: parseFloat(service.base_price)
+                        base_price: parseFloat(service.base_price),
+                        category_id: service.category_id || null,
                     };
                 }
             } else {
                 this.formData = {
                     name: '',
-                    base_price: 0
+                    base_price: 0,
+                    category_id: null,
                 };
             }
             this.$nextTick(() => {
@@ -164,7 +192,8 @@ export default {
 
                 const payload = {
                     name: this.formData.name.trim(),
-                    base_price: this.formData.base_price
+                    base_price: this.formData.base_price,
+                    category_id: this.formData.category_id || null,
                 };
 
                 const action = this.editingServiceId
@@ -186,7 +215,7 @@ export default {
             });
         },
         handleClose() {
-            this.formData = { name: '', base_price: 0 };
+            this.formData = { name: '', base_price: 0, category_id: null };
             this.$refs.formRef?.resetFields();
             this.$emit('close');
         }

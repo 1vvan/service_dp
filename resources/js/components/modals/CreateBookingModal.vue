@@ -40,8 +40,8 @@
                         <el-option
                             v-for="car in cars"
                             :key="car.id"
-                            :label="`${car.full_name} ${car.car_year} - ${car.license_plate}`"
-                            :value="car.id"
+                            :label="carOptionLabel(car)"
+                            :value="Number(car.id)"
                         />
                     </el-select>
                 </el-form-item>
@@ -74,6 +74,31 @@
                         :disabled-time="disabledTime"
                     />
                 </el-form-item>
+            </div>
+
+            <div class="form-row" v-if="isManagerOrAdmin">
+                <el-form-item label="Майстер (необов'язково)" prop="master_id">
+                    <el-select
+                        v-model="formData.master_id"
+                        placeholder="Оберіть майстра"
+                        filterable
+                        clearable
+                        @change="checkMasterSlot"
+                    >
+                        <el-option
+                            v-for="m in mastersList"
+                            :key="m.id"
+                            :label="m.full_name"
+                            :value="m.id"
+                        />
+                    </el-select>
+                </el-form-item>
+                <el-alert
+                    v-if="masterConflict"
+                    type="warning"
+                    :closable="false"
+                    style="margin-top: 4px;"
+                >{{ masterConflict }}</el-alert>
             </div>
 
             <div class="form-row">
@@ -128,6 +153,7 @@
 <script>
 import { ElMessage } from 'element-plus';
 import { Calendar, Money, ArrowUp } from '@element-plus/icons-vue';
+import { USER_ROLES } from '../../constants/types';
 
 export default {
     name: 'CreateCarModal',
@@ -155,11 +181,16 @@ export default {
                 services: [],
                 total_price: 0,
             },
+            masterConflict: null,
+            editingClientId: null,
+            /** Авто з відповіді GET booking, якщо його немає в userCars (рідкісний випадок) */
+            editingBookingCarOption: null,
             formData: {
                 car: null,
                 services: [],
                 date: null,
-                comment: null
+                comment: null,
+                master_id: null,
             },
             formRules: {
                 car: [
@@ -192,22 +223,59 @@ export default {
         },
         cars() {
             const userCars = this.$store.state.cars.userCars || [];
-            return userCars.filter(car => car.checked_by !== null);
+            const sid = (id) => (id != null ? Number(id) : null);
+            const selectedId = sid(this.formData.car);
+
+            const verifiedOnly = userCars.filter((car) => car.checked_by != null);
+
+            if (!this.editingBookingId || selectedId == null) {
+                return verifiedOnly;
+            }
+
+            const selectedFromList = userCars.find((c) => sid(c.id) === selectedId);
+            const list = [...verifiedOnly];
+            if (selectedFromList && !list.some((c) => sid(c.id) === selectedId)) {
+                list.push(selectedFromList);
+            }
+            if (
+                !selectedFromList &&
+                this.editingBookingCarOption &&
+                sid(this.editingBookingCarOption.id) === selectedId
+            ) {
+                list.push(this.editingBookingCarOption);
+            }
+            return list;
         },
         services() {
             return this.$store.state.references.services || [];
         },
+        isManagerOrAdmin() {
+            const u = this.$store.state.user;
+            return u && (u.role_id === USER_ROLES.MANAGER || u.role_id === USER_ROLES.ADMIN);
+        },
+        resolvedClientId() {
+            return this.editingClientId || this.user?.client_id || null;
+        },
+        mastersList() {
+            return this.$store.state.masters.masters || [];
+        },
     },
-    mounted() {
-        this.$store.dispatch('cars/fetchUserCars', { clientId: this.user.client_id });
+    async mounted() {
+        if (this.user?.client_id) {
+            this.$store.dispatch('cars/fetchUserCars', { clientId: this.user.client_id });
+        }
+        if (this.isManagerOrAdmin) {
+            try {
+                await this.$store.dispatch('masters/fetchMasters');
+            } catch { /* ignore */ }
+        }
     },
     watch: {
         isOpen(newVal) {
             if (newVal) {
                 if (this.editingBookingId) {
                     this.initEditBooking();
-                }
-                if (this.user?.client_id) {
+                } else if (this.resolvedClientId) {
                     this.loadClientBookings();
                 }
             }
@@ -217,7 +285,7 @@ export default {
         },
         'formData.car'() {
             this.calculatePrice();
-            if (this.user?.client_id) {
+            if (this.resolvedClientId) {
                 this.loadClientBookings();
             }
         },
@@ -236,26 +304,49 @@ export default {
                         this.formData.date = null;
                         this.$refs.createBookingFormRef?.validateField('date');
                     });
+                } else {
+                    this.checkMasterSlot();
                 }
             }
         }
     },
     methods: {
-        initEditBooking() {
-            this.$store.dispatch('bookings/getBooking', this.editingBookingId).then(response => {
+        async initEditBooking() {
+            try {
+                const response = await this.$store.dispatch('bookings/getBooking', this.editingBookingId);
+                this.editingClientId = response.client_id;
+                this.editingBookingCarOption =
+                    response.car && typeof response.car === 'object' ? response.car : null;
+
+                await this.$store.dispatch('cars/fetchUserCars', {
+                    clientId: response.client_id,
+                    force: true,
+                });
+
                 let formattedDate = null;
                 if (response.date) {
                     formattedDate = this.$moment(response.date, 'DD.MM.YYYY HH:mm').format('YYYY-MM-DD HH:mm:ss');
                 }
-                
+
+                const carId = response.car_id != null ? Number(response.car_id) : null;
+
                 this.formData = {
-                    car: response.car_id,
-                    services: response.services.map(service => service.id),
+                    car: carId,
+                    services: (response.services || []).map((s) => Number(s.id)),
                     date: formattedDate,
-                    comment: response.description
+                    comment: response.description,
+                    master_id: response.master_id != null ? Number(response.master_id) : null,
                 };
                 this.calculatePrice();
-            });
+            } catch {
+                ElMessage.error('Не вдалося завантажити запис');
+            }
+        },
+        carOptionLabel(car) {
+            const name = car.full_name ?? '';
+            const year = car.car_year ?? '';
+            const plate = car.license_plate ?? '';
+            return `${name} ${year} - ${plate}`.trim();
         },
         disabledDate(time) {
             const today = new Date();
@@ -366,14 +457,19 @@ export default {
             formRef.validate().then((valid) => {
                 if (!valid) return;
 
+                const data = {
+                    car_id: this.formData.car,
+                    service_ids: this.formData.services,
+                    date: this.formData.date,
+                    comment: this.formData.comment,
+                };
+                if (this.isManagerOrAdmin) {
+                    data.master_id = this.formData.master_id ?? null;
+                }
+
                 const payload = {
-                    data: {
-                        car_id: this.formData.car,
-                        service_ids: this.formData.services,
-                        date: this.formData.date,
-                        comment: this.formData.comment
-                    },
-                    client_id: this.user.client_id,
+                    data,
+                    client_id: this.resolvedClientId,
                 };
 
                 if (this.editingBookingId) {
@@ -427,14 +523,30 @@ export default {
                 maximumFractionDigits: 2
             }).format(price);
         },
+        async checkMasterSlot() {
+            this.masterConflict = null;
+            if (!this.formData.master_id || !this.formData.date) return;
+
+            try {
+                const data = await this.$store.dispatch('masters/checkMasterAvailability', {
+                    master_id: this.formData.master_id,
+                    date: this.formData.date,
+                    exclude_booking_id: this.editingBookingId || null,
+                });
+                if (!data.available) {
+                    this.masterConflict = data.message;
+                }
+            } catch { /* ignore */ }
+        },
         async loadClientBookings() {
-            if (!this.user?.client_id || this.loadingBookings) {
+            const clientId = this.resolvedClientId;
+            if (!clientId || this.loadingBookings) {
                 return;
             }
 
             this.loadingBookings = true;
             try {
-                const bookings = await this.$store.dispatch('bookings/fetchUserBookings', { clientId: this.user.client_id, force: true });
+                const bookings = await this.$store.dispatch('bookings/fetchUserBookings', { clientId, force: true });
                 
                 this.unavailableDates.clear();
                 
@@ -461,7 +573,10 @@ export default {
                 services: [],
                 total_price: 0,
             };
-            this.formData = { car: null, services: [], date: null, comment: null };
+            this.formData = { car: null, services: [], date: null, comment: null, master_id: null };
+            this.masterConflict = null;
+            this.editingClientId = null;
+            this.editingBookingCarOption = null;
             this.unavailableDates.clear();
             this.loadingBookings = false;
             this.$refs.createBookingFormRef?.resetFields();

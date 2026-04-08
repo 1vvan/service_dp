@@ -56,4 +56,24 @@ class CarRepository implements CarRepositoryInterface
         $car->update(['checked_by' => $user->id]);
         return $car;
     }
+
+    public function createCarFromPublic(int $clientId, array $data): ClientCar
+    {
+        $car = ClientCar::create([
+            'client_id' => $clientId,
+            'car_model_id' => $data['car_model_id'],
+            'car_year' => $data['year'],
+            'mileage' => $data['mileage'] ?? 0,
+            'vin' => $data['vin'] ?? null,
+            'license_plate' => $data['licence_plate'],
+            'engine_type_id' => null,
+            'gearbox_type_id' => null,
+            'drive_unit_type_id' => null,
+            'fuel_type_id' => null,
+            'checked_by' => null,
+        ]);
+
+        $car->load('carModel.brand');
+        return $car;
+    }
 }

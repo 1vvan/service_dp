@@ -8,6 +8,12 @@ const routes = [
         component: () => import('../components/pages/home/Home.vue')
     },
     {
+        path: '/booking',
+        name: 'PublicBooking',
+        component: () => import('../components/pages/PublicBooking.vue'),
+        meta: { title: 'Онлайн-запис' }
+    },
+    {
         path: '/dashboard',
         name: 'Dashboard',
         component: () => import('../components/pages/dashboard/Dashboard.vue'),
@@ -105,6 +111,16 @@ const routes = [
             title: 'Записи',
             subtitle: 'Керування записами',
             requiresAuth: true
+        }
+    },
+    {
+        path: '/dashboard/master',
+        name: 'MasterDashboard',
+        component: () => import('../components/pages/dashboard/components/master/MasterDashboard.vue'),
+        meta: {
+            title: 'Мої записи',
+            subtitle: 'Кабінет майстра',
+            requiresAuth: true,
         }
     },
     {

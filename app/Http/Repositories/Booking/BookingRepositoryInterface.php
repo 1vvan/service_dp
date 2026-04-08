@@ -15,4 +15,8 @@ interface BookingRepositoryInterface
     public function calculatePriceDetails(int $carId, array $serviceIds): array;
 
     public function confirmBooking(int $bookingId): Booking;
+
+    public function assignMaster(int $bookingId, ?int $masterId): Booking;
+
+    public function updateStatus(int $bookingId, int $statusId): Booking;
 }

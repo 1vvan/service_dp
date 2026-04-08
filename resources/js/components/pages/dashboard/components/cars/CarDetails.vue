@@ -9,13 +9,13 @@
                     </el-button>
                     <h1 class="title">Інформація про автомобіль</h1>
                 </div>
-                <div class="action-buttons" v-if="!loading && car">
-                    <template v-if="isManagerOrAdmin">
-                        <el-button v-if="!editMode" type="primary" class="edit" @click="enableEditMode">
+                <div class="action-buttons" v-if="!loading && car && isManagerOrAdmin">
+                    <template v-if="!editMode">
+                        <el-button type="primary" class="edit" @click="enableEditMode">
                             <el-icon><Edit /></el-icon>
                             <span>Редагувати</span>
                         </el-button>
-                        <el-button v-if="!editMode" class="photo-btn" @click="openUploadPhotoModal">
+                        <el-button class="photo-btn" @click="openUploadPhotoModal">
                             <el-icon><Picture /></el-icon>
                             <span>Додати фото</span>
                         </el-button>

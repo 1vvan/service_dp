@@ -55,10 +55,9 @@
 
             <div class="form-row">
                 <el-form-item label="Телефон" prop="phone">
-                    <el-input
+                    <PhoneInput
                         v-model="formData.phone"
-                        placeholder="+380 (XX) XXX-XX-XX"
-                        maxlength="255"
+                        placeholder="+380 (00) 000 00 00"
                         clearable
                     />
                 </el-form-item>
@@ -79,11 +78,14 @@
 <script>
 import { ElMessage } from 'element-plus';
 import { User } from '@element-plus/icons-vue';
+import PhoneInput from '../ui/PhoneInput.vue';
+import { normalizePhone } from '../../lib/utils';
 
 export default {
     name: 'CreateClientModal',
     components: {
-        User
+        User,
+        PhoneInput,
     },
     props: {
         isOpen: {
@@ -146,7 +148,7 @@ export default {
                 this.$store.dispatch('clients/createClient', {
                     full_name: this.formData.full_name.trim(),
                     email: this.formData.email.trim(),
-                    phone: (this.formData.phone || '').trim() || ''
+                    phone: normalizePhone(this.formData.phone) || '',
                 })
                     .then(() => {
                         ElMessage.success('Клієнта створено');

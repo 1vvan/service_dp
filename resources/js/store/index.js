@@ -7,6 +7,7 @@ import cars from './modules/cars';
 import clients from './modules/clients';
 import dash from './modules/dash';
 import services from './modules/services';
+import masters from './modules/masters';
 
 const token = localStorage.getItem('token');
 if (token) {
@@ -20,6 +21,7 @@ export default createStore({
         isAdmin: false,
         isManager: false,
         isClient: false,
+        isMaster: false,
         isManagerOrAdmin: false,
     },
     mutations: {
@@ -28,6 +30,7 @@ export default createStore({
             state.isAdmin = user.role_id === USER_ROLES.ADMIN;
             state.isManager = user.role_id === USER_ROLES.MANAGER;
             state.isClient = user.role_id === USER_ROLES.CLIENT;
+            state.isMaster = user.role_id === USER_ROLES.MASTER;
             state.isManagerOrAdmin = user.role_id === USER_ROLES.MANAGER || user.role_id === USER_ROLES.ADMIN;
         },
         setToken(state, token) {
@@ -110,6 +113,7 @@ export default createStore({
         cars,
         clients,
         dash,
-        services
+        services,
+        masters,
     }
 });

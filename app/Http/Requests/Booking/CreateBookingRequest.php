@@ -30,6 +30,7 @@ class CreateBookingRequest extends FormRequest
                 },
             ],
             'comment' => ['nullable', 'string', 'max:1000'],
+            'master_id' => ['nullable', 'integer', 'exists:users,id'],
         ];
     }
 
@@ -45,6 +46,7 @@ class CreateBookingRequest extends FormRequest
             'date.required' => 'Виберіть дату та час',
             'date.date_format' => 'Невірний формат дати',
             'comment.max' => 'Коментар не може перевищувати 1000 символів',
+            'master_id.exists' => 'Обраний майстер не існує',
         ];
     }
 }

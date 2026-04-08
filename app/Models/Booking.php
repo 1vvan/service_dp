@@ -11,6 +11,7 @@ class Booking extends Model
 {
     protected $fillable = [
         'manager_id',
+        'master_id',
         'client_id',
         'car_id',
         'status_id',
@@ -52,6 +53,11 @@ class Booking extends Model
     public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function master(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'master_id');
     }
 
     public function client(): BelongsTo

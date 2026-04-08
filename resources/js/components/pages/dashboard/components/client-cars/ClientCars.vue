@@ -9,7 +9,7 @@
                     <span class="text">Додати автомобіль</span>
                 </button>
             </div>
-            <CarsTable :cars="cars" :loading="loading" @edit-car="editCar"/>
+            <CarsTable :cars="cars" :loading="loading" />
         </div>
 
         <CreateCarModal :isOpen="isCreateCarModalOpen" @close="closeCreateCarModal" managerMode :editingCarId="editingCarId" />
@@ -73,10 +73,6 @@ export default {
             this.isCreateCarModalOpen = false;
             this.editingCarId = null;
         },
-        editCar(carId) {
-            this.editingCarId = carId;
-            this.isCreateCarModalOpen = true;
-        }
     }
 };
 </script>

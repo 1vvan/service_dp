@@ -99,12 +99,10 @@
                     </el-form-item>
 
                     <el-form-item label="Телефон" prop="phone">
-                        <el-input
+                        <PhoneInput
                             v-model="formData.phone"
-                            type="tel"
-                            placeholder="+380 (00) 000 00 00"
                             size="large"
-                            @input="handlePhoneInput"
+                            placeholder="+380 (00) 000 00 00"
                         />
                     </el-form-item>
 
@@ -147,10 +145,13 @@
 
 <script>
 import { ElMessage } from 'element-plus';
-import { normalizePhone, formatPhone } from '../../lib/utils';
+import PhoneInput from '../ui/PhoneInput.vue';
+import { normalizePhone, PHONE_INPUT_PREFIX, isUaMobileComplete } from '../../lib/utils';
+import { USER_ROLES } from '../../constants/types';
 
 export default {
     name: 'AuthModal',
+    components: { PhoneInput },
     props: {
         isOpen: {
             type: Boolean,
@@ -214,9 +215,9 @@ export default {
                                 callback();
                                 return;
                             }
-                            const phonePattern = /^\+380\s\(\d{2}\)\s\d{3}\s\d{2}\s\d{2}$/;
-                            if (!phonePattern.test(value)) {
-                                callback(new Error('Будь ласка, введіть коректний телефон у форматі +380 (00) 000 00 00'));
+                            const n = normalizePhone(value);
+                            if (!isUaMobileComplete(n)) {
+                                callback(new Error('Будь ласка, введіть повний номер у форматі +380 (00) 000 00 00'));
                             } else {
                                 callback();
                             }
@@ -244,7 +245,12 @@ export default {
             if (!newVal) {
                 this.resetForm();
             }
-        }
+        },
+        mode(val) {
+            if (val === 'register' && (!this.formData.phone || this.formData.phone.trim() === '')) {
+                this.formData.phone = PHONE_INPUT_PREFIX;
+            }
+        },
     },
     methods: {
         handleClose() {
@@ -252,9 +258,6 @@ export default {
         },
         togglePassword() {
             this.showPassword = !this.showPassword;
-        },
-        handlePhoneInput(value) {
-            this.formData.phone = formatPhone(value);
         },
         handleSubmit() {
             const formRef = this.mode === 'login' ? this.$refs.loginFormRef : this.$refs.registerFormRef;
@@ -287,7 +290,12 @@ export default {
                     );
                     this.handleClose();
                     this.resetForm();
-                    this.$router.push('/dashboard');
+                    const user = this.$store.state.user;
+                    if (user?.role_id === USER_ROLES.MASTER) {
+                        this.$router.push('/dashboard/master');
+                    } else {
+                        this.$router.push('/dashboard');
+                    }
                 }).catch((error) => {
                     const errorMessage = error.response?.data?.message || error.message || 'Сталася помилка';
                     ElMessage.error(errorMessage);

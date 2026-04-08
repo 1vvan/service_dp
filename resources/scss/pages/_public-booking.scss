@@ -1,0 +1,444 @@
+@use '../variables' as *;
+
+.public-booking-page {
+    min-height: 100vh;
+    background: $gradient-hero;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.public-booking-background {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.public-booking-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+}
+
+.public-booking-blob-1 {
+    top: 25%;
+    left: -8rem;
+    width: 24rem;
+    height: 24rem;
+    background: rgba($primary, 0.1);
+    animation: float 6s ease-in-out infinite;
+}
+
+.public-booking-blob-2 {
+    bottom: 25%;
+    right: -8rem;
+    width: 20rem;
+    height: 20rem;
+    background: rgba($primary, 0.05);
+    animation: float 6s ease-in-out infinite;
+    animation-delay: -3s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.public-booking-header {
+    position: relative;
+    z-index: 10;
+    padding: 1rem 1.5rem;
+}
+
+.public-booking-header-inner {
+    max-width: 42rem;
+    margin: 0 auto;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $muted-foreground;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: $foreground;
+}
+
+.back-link svg {
+    flex-shrink: 0;
+}
+
+.public-booking-container {
+    position: relative;
+    z-index: 10;
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem;
+}
+
+.public-booking-intro {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.intro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    background: rgba($card, 0.8);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba($border, 0.5);
+    margin-bottom: 1.5rem;
+    color: $muted-foreground;
+    font-size: 0.875rem;
+}
+
+.intro-badge svg {
+    color: $primary;
+}
+
+.public-booking-title {
+    font-size: 2.25rem;
+    font-family: $font-display;
+    font-weight: 700;
+    color: $foreground;
+    margin-bottom: 0.75rem;
+
+    @media (min-width: $breakpoint-md) {
+        font-size: 3rem;
+    }
+}
+
+.text-gradient {
+    background: $gradient-accent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.public-booking-subtitle {
+    color: $muted-foreground;
+    font-size: 1.125rem;
+}
+
+.public-booking-form {
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid rgba($border, 0.5);
+    background: rgba($card, 0.8);
+    backdrop-filter: blur(24px);
+    box-shadow: $shadow-elevated;
+}
+
+.form-section {
+    margin-bottom: 1.5rem;
+}
+
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $foreground;
+    margin-bottom: 1rem;
+}
+
+.form-section-title svg {
+    color: $primary;
+    flex-shrink: 0;
+}
+
+.form-row {
+    display: grid;
+    gap: 1rem;
+}
+
+.form-row-2 {
+    grid-template-columns: 1fr 1fr;
+
+    @media (max-width: $breakpoint-sm) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.full-width {
+    width: 100%;
+}
+
+.form-actions {
+    margin-top: 1.5rem;
+}
+
+.submit-btn {
+    width: 100%;
+}
+
+.selected-services-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.service-tag {
+    margin: 0;
+}
+
+.public-booking-form {
+    .el-form-item {
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .el-form-item__label {
+        color: $foreground;
+        font-weight: 500;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .el-form-item__error {
+        color: $destructive;
+        font-size: 0.75rem;
+        padding-top: 0.25rem;
+    }
+
+    .form-row {
+        width: 100%;
+        display: flex;
+        gap: 1rem;
+
+        & .el-form-item {
+            width: 100%;
+        }
+    }
+
+    .el-input.is-disabled {
+        .el-input__wrapper {
+            background-color: #262c35 !important;
+            opacity: 0.7;
+        }
+    }
+}
+
+.el-input {
+    .el-input__wrapper {
+        background-color: $gray-750;
+        border: 1px solid $gray-700;
+        border-radius: $border-radius-md;
+        box-shadow: none !important;
+        padding: 8px 15px !important;
+        transition: all 0.2s ease;
+        height: 36px;
+        
+        &:hover {
+            border-color: rgba($primary, 0.5);
+        }
+        
+        &.is-focus {
+            border-color: $primary;
+            box-shadow: 0 0 0 2px rgba($primary, 0.1);
+        }
+    }
+
+    .el-input__inner {
+        height: auto !important;
+        max-height: 21px !important;
+        color: $foreground;
+        background-color: transparent;
+        
+        &::placeholder {
+            color: $muted-foreground;
+        }
+    }
+
+    .el-input__prefix {
+        color: $muted-foreground;
+    }
+
+    .el-input__suffix {
+        color: $muted-foreground;
+    }
+
+    .el-input__count-inner {
+        background: transparent !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+
+    input[type='number'] {
+        -moz-appearance: textfield;
+    }
+}
+
+.el-textarea {
+    .el-input__count {
+        background: transparent !important;
+    }
+}
+
+.el-input-number {
+    .el-input-number__decrease,
+    .el-input-number__increase {
+        background: transparent !important;
+        border-color: $gray-600 !important;
+
+        .el-icon {
+            color: $foreground;
+        }
+    }
+}
+
+.el-select {
+    box-shadow: none !important;
+
+    .el-select__wrapper {
+        min-height: 36px;
+        background-color: $gray-750;
+        border: 1px solid $gray-700;
+        border-radius: $border-radius-md;
+        box-shadow: none !important;
+        transition: all 0.2s ease;
+        padding: 8px 15px !important;
+
+        &:hover {
+            border-color: $orange-500;
+        }
+
+        &.is-disabled {
+            background-color: $gray-700;
+            border-color: $gray-700;
+            cursor: not-allowed;
+        }
+        
+        &.is-focused {
+            border-color: $orange-500;
+            box-shadow: 0 0 0 2px rgba($orange-500, 0.1);
+        }
+
+        & .el-select__selected-item, 
+        & .el-select__placeholder {
+            line-height: 1.5;
+            color: $muted-foreground;
+        }
+
+        & .el-select__selected-item {
+            color: $foreground;
+            & .el-tag {
+                border-color: $gray-700;
+                background-color: $gray-700;
+                color: $foreground;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: 1.5;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+        }
+    }
+}
+
+.el-date-editor {
+    width: 100% !important;
+}
+
+.el-textarea {
+    & .el-textarea__inner {
+        background-color: $gray-750;
+        border: 1px solid $gray-700;
+        border-radius: $border-radius-md;
+        box-shadow: none !important;
+        padding: 8px 15px !important;
+        transition: all 0.2s ease;
+        color: $foreground;
+        
+        &:hover {
+            border-color: rgba($primary, 0.5);
+        }
+        
+        &.is-focus {
+            border-color: $primary;
+            box-shadow: 0 0 0 2px rgba($primary, 0.1);
+        }
+    }
+}
+
+.animate-slide-up {
+    animation: slide-up 0.5s ease-out forwards;
+}
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Success */
+.public-booking-success {
+    position: relative;
+    z-index: 10;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+}
+
+.success-card {
+    max-width: 28rem;
+    width: 100%;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    border: 1px solid rgba($border, 0.5);
+    background: rgba($card, 0.8);
+    backdrop-filter: blur(24px);
+    box-shadow: $shadow-elevated;
+    text-align: center;
+}
+
+.success-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: rgba($primary, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: $primary;
+}
+
+.success-title {
+    font-size: 1.5rem;
+    font-family: $font-display;
+    font-weight: 700;
+    color: $foreground;
+    margin-bottom: 0.75rem;
+}
+
+.success-text {
+    color: $muted-foreground;
+    margin-bottom: 1.5rem;
+}
+
+.success-card a {
+    text-decoration: none;
+}

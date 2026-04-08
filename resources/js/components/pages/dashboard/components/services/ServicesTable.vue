@@ -10,6 +10,12 @@
                 <span class="white-text">{{ scope.row.name }}</span>
             </template>
         </el-table-column>
+        <el-table-column prop="category" label="Категорія" width="160" sortable :sort-method="sortByCategory">
+            <template #default="scope">
+                <span v-if="scope.row.category" class="category-badge">{{ scope.row.category.name }}</span>
+                <span v-else class="muted-text">—</span>
+            </template>
+        </el-table-column>
         <el-table-column prop="base_price" label="Вартість (грн)" width="200" sortable :sort-method="sortByPrice">
             <template #default="scope">
                 <span class="white-text">{{ formatPrice(scope.row.base_price) }}</span>
@@ -60,6 +66,11 @@ export default {
         }
     },
     methods: {
+        sortByCategory(a, b) {
+            const catA = a.category?.name || '';
+            const catB = b.category?.name || '';
+            return catA.localeCompare(catB, 'uk');
+        },
         sortByPrice(a, b) {
             const priceA = parseFloat(a.base_price) || 0;
             const priceB = parseFloat(b.base_price) || 0;

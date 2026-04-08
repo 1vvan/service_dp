@@ -23,13 +23,25 @@ class PaymentController extends Controller
     public function createCheckoutSession(Booking $booking): JsonResponse
     {
         try {
+            if ($booking->status_id === BookingStatus::getCompletedStatusId()) {
+                return response()->json([
+                    'message' => 'Цей запис вже завершено та оплачено',
+                ], 400);
+            }
+
+            if ($booking->status_id !== BookingStatus::getPendingPaymentStatusId()) {
+                return response()->json([
+                    'message' => 'Оплата можлива лише після завершення роботи майстра',
+                ], 400);
+            }
+
             $paidTransaction = PaymentTransaction::where('booking_id', $booking->id)
                 ->where('payment_status', PaymentTransaction::STATUS_COMPLETED)
                 ->first();
 
             if ($paidTransaction) {
                 return response()->json([
-                    'message' => 'Цей букінг вже оплачений',
+                    'message' => 'Цей запис вже оплачений',
                 ], 400);
             }
 
@@ -133,14 +145,26 @@ class PaymentController extends Controller
 
         $transaction = PaymentTransaction::where('transaction_id', $session->id)->first();
 
-        if ($transaction) {
-            $transaction->update([
-                'payment_status' => PaymentTransaction::STATUS_COMPLETED,
-            ]);
+        if (!$transaction) {
+            Log::warning('Stripe session completed but no transaction found: ' . $session->id);
+            return;
+        }
 
-            $booking = Booking::find($bookingId);
+        $transaction->update([
+            'payment_status' => PaymentTransaction::STATUS_COMPLETED,
+        ]);
+
+        $booking = Booking::find($bookingId);
+
+        if (!$booking) {
+            Log::warning('Stripe session completed but booking not found: ' . $bookingId);
+            return;
+        }
+
+        // Only transition if booking is awaiting payment
+        if ($booking->status_id === BookingStatus::getPendingPaymentStatusId()) {
             $booking->update([
-                'status_id' => BookingStatus::getPaidStatusId(),
+                'status_id' => BookingStatus::getCompletedStatusId(),
             ]);
         }
     }

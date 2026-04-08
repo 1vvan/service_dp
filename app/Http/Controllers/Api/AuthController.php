@@ -15,16 +15,23 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request): JsonResponse
     {
-        $client = Client::create([
-            'full_name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-        ]);
+        // If a client with this phone was already created via the public booking form — link to them
+        $client = Client::where('phone', $request->phone)->first();
 
-        if (!$client) {
-            return response()->json([
-                'message' => 'Помилка при створенні клієнта',
-            ], 500);
+        if ($client) {
+            // Replace the system-generated placeholder email if present
+            if ($client->email && str_contains($client->email, '@booking.local')) {
+                $client->update([
+                    'full_name' => $request->name,
+                    'email' => $request->email,
+                ]);
+            }
+        } else {
+            $client = Client::create([
+                'full_name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+            ]);
         }
 
         $user = User::create([

@@ -217,14 +217,19 @@ export default {
             }
         },
         fetchUserData() {
+            const user = this.$store.state.user;
+            if (user?.role_id === USER_ROLES.MASTER) {
+                this.$router.replace('/dashboard/master');
+                return;
+            }
             if (this.isUserClient) {
                 Promise.all([
-                    this.$store.dispatch('cars/fetchUserCars', { clientId: this.$store.state.user.client_id }),
-                        this.$store.dispatch('bookings/fetchUserBookings', { clientId: this.$store.state.user.client_id }),
-                        this.$store.dispatch('dash/fetchStats', this.$store.state.user.client_id)
-                    ]).then(() => {
-                        this.isLoading = false;
-                    });
+                    this.$store.dispatch('cars/fetchUserCars', { clientId: user.client_id }),
+                    this.$store.dispatch('bookings/fetchUserBookings', { clientId: user.client_id }),
+                    this.$store.dispatch('dash/fetchStats', user.client_id)
+                ]).then(() => {
+                    this.isLoading = false;
+                });
             } else {
                 Promise.all([
                     this.$store.dispatch('bookings/fetchUpcomingBookings', {}),
